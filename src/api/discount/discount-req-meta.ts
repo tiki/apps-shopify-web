@@ -4,6 +4,7 @@
  */
 export interface DiscountReqMeta {
   type: 'product' | 'order';
+  description: string;
   discountType: string;
   discountValue: number;
   minValue: number;

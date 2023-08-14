@@ -5,8 +5,7 @@
 
 import React from 'react';
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
-
-import { DiscountReq } from '../../../interface/discount-req'
+import { DiscountReq } from '../../../../../src/api/discount/discount-req'
 
 export function DiscountOrderDetail() {
 
@@ -14,8 +13,9 @@ export function DiscountOrderDetail() {
         "title": "Test Title",
         "startsAt": new Date("2023-06-20T10:54:12.959Z"),
         "endsAt": new Date("2024-06-20T10:54:12.959Z"),
-        "description": "test description",
         "metafields": {
+        "description": "test description",
+
             "type": "order",
             "discountType": "amount",
             "discountValue": 10,
@@ -41,7 +41,7 @@ export function DiscountOrderDetail() {
                         <Card>
                             <Card.Section title="Title">
                                 <p>Title: {discount.title}</p>
-                                <p>Description: {discount.description}</p>
+                                <p>Description: {discount.metafields.description}</p>
                             </Card.Section>
                             <Card.Section title="Value">
                                 <p>Discount Type: {discount.metafields.discountType}</p>

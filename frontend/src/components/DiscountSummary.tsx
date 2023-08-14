@@ -5,8 +5,10 @@
 import React, { useState } from 'react';
 import { SummaryCard, DiscountMethod } from "@shopify/discount-app-components";
 import { Card } from '@shopify/polaris';
-import { DiscountReq } from '../interface/discount-req';
-import { DiscountReqCombine } from '../interface/discount-req-combine';
+import { DiscountReq } from '../../../src/api/discount/discount-req'
+
+import { DiscountReqCombine } from '../../../src/api/discount/discount-req-combine'
+
 
 interface DiscountSummaryProps {
     title: string,

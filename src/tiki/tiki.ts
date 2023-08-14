@@ -57,7 +57,7 @@ export class Tiki {
 
   async createApp(
     accessToken: string,
-    shopDomain: string
+    shopDomain: string,
   ): Promise<TikiAppCreateRsp> {
     const req: TikiAppCreateReq = {
       name: shopDomain,
@@ -78,7 +78,7 @@ export class Tiki {
   async createKey(
     accessToken: string,
     appId: string,
-    isPublic: boolean
+    isPublic: boolean,
   ): Promise<TikiKeyCreateRsp> {
     const headers = new API.HeaderBuilder()
       .accept(API.Consts.APPLICATION_JSON)
@@ -117,7 +117,7 @@ export class Tiki {
   async license(
     accessToken: string,
     ptr: string,
-    app: string
+    app: string,
   ): Promise<TikiLicenseRsp> {
     const req: TikiLicenseReq = {
       ptrs: [ptr],
@@ -156,20 +156,20 @@ export class Tiki {
   async verifyRsa(
     key: ArrayBuffer,
     signature: string,
-    data: string
+    data: string,
   ): Promise<boolean> {
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
       key,
       { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
       false,
-      ['verify']
+      ['verify'],
     );
     return await crypto.subtle.verify(
       'RSASSA-PKCS1-v1_5',
       cryptoKey,
       b64Decode(signature),
-      new TextEncoder().encode(data)
+      new TextEncoder().encode(data),
     );
   }
 
@@ -179,7 +179,7 @@ export class Tiki {
       JSON.parse(this.jwk),
       { name: 'ECDSA', namedCurve: 'P-256', hash: 'SHA-256' },
       false,
-      ['verify']
+      ['verify'],
     );
     return JWT.decode(token, key, {
       algorithm: { name: 'ECDSA', hash: 'SHA-256' },

@@ -3,7 +3,8 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { DiscountReq } from '../../../interface/discount-req'
+import { DiscountReq } from '../../../../../src/api/discount/discount-req'
+
 import { Redirect } from '@shopify/app-bridge/actions'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 import { Page, Layout, PageActions, Card } from '@shopify/polaris'
@@ -15,9 +16,10 @@ export function DiscountProductDetail() {
         "title": "Test Title",
         "startsAt": new Date("2023-06-20T10:54:12.959Z"),
         "endsAt": new Date("2024-06-20T10:54:12.959Z"),
-        "description": "test description",
         "metafields": {
             "type": "order",
+        "description": "test description",
+
             "discountType": "amount",
             "discountValue": 10,
             "minValue": 100,
@@ -41,7 +43,7 @@ export function DiscountProductDetail() {
                     <Card>
                         <Card.Section title="Title">
                             <p>Title: {discount.title}</p>
-                            <p>Description: {discount.description}</p>
+                            <p>Description: {discount.metafields.description}</p>
                         </Card.Section>
                         <Card.Section title="Value">
                             <p>Discount Type: {discount.metafields.discountType}</p>

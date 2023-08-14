@@ -443,12 +443,12 @@ async function sign(data: string): Promise<ArrayBuffer> {
     new TextEncoder().encode(secret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ['sign']
+    ['sign'],
   );
   return await crypto.subtle.sign(
     'HMAC',
     cryptoKey,
-    new TextEncoder().encode(data)
+    new TextEncoder().encode(data),
   );
 }
 
@@ -457,8 +457,8 @@ export async function signedHeader(): Promise<string> {
   return btoa(
     String.fromCharCode.apply(
       null,
-      Array.from<number>(new Uint8Array(signature))
-    )
+      Array.from<number>(new Uint8Array(signature)),
+    ),
   );
 }
 export async function signedQuery(): Promise<string> {

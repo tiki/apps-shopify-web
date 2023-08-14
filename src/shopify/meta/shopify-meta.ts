@@ -25,6 +25,31 @@ export class ShopifyMeta extends ShopifyWebhook {
 
   async setMetafields(fields: Array<ShopifyMetafield>): Promise<void> {
     const accessToken = await this.getToken();
+    const mutationQuery = mutation(
+      {
+        operation: 'metafieldsSet',
+        variables: {
+          metafields: {
+            value: fields,
+            type: 'MetafieldsSetInput!',
+            required: true,
+            list: true,
+          },
+        },
+        fields: [
+          {
+            metafields: ['key', 'namespace', 'value', 'createdAt', 'updatedAt'],
+          },
+          {
+            userErrors: ['field', 'message'],
+          },
+        ],
+      },
+      undefined,
+      {
+        operationName: 'MetafieldsSet',
+      },
+    );
     await fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
       headers: new API.HeaderBuilder()
@@ -32,45 +57,13 @@ export class ShopifyMeta extends ShopifyWebhook {
         .content(API.Consts.APPLICATION_JSON)
         .set(ShopifyAuth.tokenHeader, accessToken)
         .build(),
-      body: JSON.stringify(
-        mutation(
-          {
-            operation: 'metafieldsSet',
-            variables: {
-              metafields: {
-                value: fields,
-                type: 'MetafieldsSetInput!',
-                required: true,
-                list: true,
-              },
-            },
-            fields: [
-              {
-                metafields: [
-                  'key',
-                  'namespace',
-                  'value',
-                  'createdAt',
-                  'updatedAt',
-                ],
-              },
-              {
-                userErrors: ['field', 'message'],
-              },
-            ],
-          },
-          undefined,
-          {
-            operationName: 'MetafieldsSet',
-          }
-        )
-      ),
+      body: JSON.stringify(mutationQuery),
     });
   }
 
   async getCustomerMetafield(
     id: number,
-    key: string
+    key: string,
   ): Promise<ShopifyData<ShopifyCustomerRsp>> {
     const accessToken = await this.getToken();
     return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
@@ -112,8 +105,8 @@ export class ShopifyMeta extends ShopifyWebhook {
           undefined,
           {
             operationName: 'Customer',
-          }
-        )
+          },
+        ),
       ),
     })
       .then((res) => res.json())
@@ -123,7 +116,7 @@ export class ShopifyMeta extends ShopifyWebhook {
   saveKeys = async (
     appId: string,
     publicKey: TikiKeyCreateRsp,
-    privateKey: TikiKeyCreateRsp
+    privateKey: TikiKeyCreateRsp,
   ): Promise<void> =>
     this.setMetafields([
       {
@@ -150,7 +143,7 @@ export class ShopifyMeta extends ShopifyWebhook {
     ]);
 
   async getInstall(
-    accessToken: string
+    accessToken: string,
   ): Promise<ShopifyData<ShopifyAppInstallRsp>> {
     const gql = query({
       operation: 'currentAppInstallation',

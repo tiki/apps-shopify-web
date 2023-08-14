@@ -9,7 +9,8 @@ import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components'
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
 
-import { DiscountReq } from '../../../interface/discount-req'
+import { DiscountReq } from '../../../../../src/api/discount/discount-req'
+
 import {
     MinReqsCard,
     ActiveDatesCard,
@@ -34,8 +35,9 @@ export function DiscountProductCreate() {
         "title": "",
         "startsAt": new Date(),
         "endsAt": undefined,
-        "description": "",
         "metafields": {
+        "description": "",
+
             "type": "product",
             "discountType": "amount",
             "discountValue": 10,
@@ -82,7 +84,7 @@ export function DiscountProductCreate() {
                             <Card.Section title="Title">
                                 <TitleAndDescription onChange={(values) => {
                                     fields.title = values.title
-                                    fields.description = values.description
+                                    fields.metafields.description = values.description
                                     setFields(fields)
                                 }} />
                             </Card.Section>
@@ -162,7 +164,7 @@ export function DiscountProductCreate() {
                 <Layout.Section secondary>
                     <DiscountSummary 
                         title={fields.title}
-                        description={fields.description}
+                        description={fields.metafields.description}
                         discountType={fields.metafields.discountType}
                         discountValue={fields.metafields.discountValue}
                         minValue={fields.metafields.minValue}

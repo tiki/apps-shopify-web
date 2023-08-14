@@ -12,7 +12,7 @@ import { AppliesTo, RequirementType } from '@shopify/discount-app-components'
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 
-import { DiscountReq } from '../../../interface/discount-req'
+import { DiscountReq } from '../../../../../src/api/discount/discount-req'
 import {
     MinReqsCard,
     ActiveDatesCard,
@@ -31,10 +31,11 @@ export function DiscountOrderCreate() {
     const authenticatedFetch = useAuthenticatedFetch();
     const [fields, setFields] = useState<DiscountReq>({
         "title": "",
-        "description": "",
         "startsAt": new Date(),
         "endsAt": undefined,
         "metafields": {
+        "description": "",
+
             "type": "order",
             "discountType": "amount",
             "discountValue": 10,
@@ -79,7 +80,7 @@ export function DiscountOrderCreate() {
                         <Card.Section title="Title">
                             <TitleAndDescription onChange={(values) => {
                                 fields.title = values.title
-                                fields.description = values.description
+                                fields.metafields.description = values.description
                                 setFields(fields)
                             }} />
                         </Card.Section>
@@ -145,7 +146,7 @@ export function DiscountOrderCreate() {
                 <Layout.Section secondary>
                     <DiscountSummary 
                         title={fields.title}
-                        description={fields.description}
+                        description={fields.metafields.description}
                         discountType={fields.metafields.discountType}
                         discountValue={fields.metafields.discountValue}
                         minValue={fields.metafields.minValue}

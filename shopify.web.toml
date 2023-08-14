@@ -1,0 +1,7 @@
+roles = ["frontend"]
+auth_callback_path = ["/api/latest/oauth/authorize", "/api/latest/oauth/token"]
+webhooks_path = "/api/webhooks"
+
+[commands]
+dev = "npm run start"
+build = "npm run build"
