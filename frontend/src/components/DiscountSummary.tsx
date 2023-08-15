@@ -33,8 +33,6 @@ export function DiscountSummary( {
     startsAt,
     endsAt,
 } : DiscountSummaryProps ) {
-    console.log(title);
-    console.log("rebuild");
     const [fields, setFields] = useState({
         title,
         description,
@@ -50,32 +48,32 @@ export function DiscountSummary( {
     return <> 
         <Card>
             <Card.Section title="Title">
-                <p>Title: {fields.title}</p>
-                <p>Description: {fields.description}</p>
+                <p>Title: {title}</p>
+                <p>Description: {description}</p>
             </Card.Section>
             <Card.Section title="Value">
-                <p>Discount Type: {fields.discountType}</p>
-                <p>Discount Value: {fields.discountType === 'amount' ? '$' : ''} {fields.discountValue}{fields.discountType === 'percentage' ? '%' : ''}</p>
+                <p>Discount Type: {discountType}</p>
+                <p>Discount Value: {discountType === 'amount' ? '$' : ''} {discountValue}{discountType === 'percentage' ? '%' : ''}</p>
             </Card.Section>
             <Card.Section title="Minimum Requirements">
-                <p>{fields.minValue ? `Minimum value:${fields.minValue}` : ''}</p>
-                <p>{fields.minQty ? `Minimum quantity:${fields.minQty}` : ''}</p>
+                <p>{minValue ? `Minimum value:${minValue}` : ''}</p>
+                <p>{minQty ? `Minimum quantity:${minQty}` : ''}</p>
             </Card.Section>
             <Card.Section title="Max Usage">
                 <p>Once per customer? </p>
-                <p>{fields.onePerUser ? 'Yes' : 'No'}</p>
+                <p>{onePerUser ? 'Yes' : 'No'}</p>
             </Card.Section>
         </Card>
         <Card>
                 <Card.Section title="Combines with">
-                    <p>Order Discounts: {fields.combinesWith.orderDiscounts ? 'Yes' : 'No'}</p>
-                    <p>Product Discounts: {fields.combinesWith.productDiscounts ? 'Yes' : 'No'}</p>
-                    <p>Shipping Discounts: {fields.combinesWith.shippingDiscounts ? 'Yes' : 'No'}</p>
+                    <p>Order Discounts: {combinesWith.orderDiscounts ? 'Yes' : 'No'}</p>
+                    <p>Product Discounts: {combinesWith.productDiscounts ? 'Yes' : 'No'}</p>
+                    <p>Shipping Discounts: {combinesWith.shippingDiscounts ? 'Yes' : 'No'}</p>
                 </Card.Section>
                 <Card.Section title="Active dates">
-                    <p>Starts at: {fields.startsAt.toLocaleTimeString()}</p>
-                    {fields.endsAt ? `<p>Ends at: ${fields.endsAt!.toLocaleDateString()}</p>` : ''}
-                </Card.Section>
+                    <p>Starts at: {startsAt ? `${startsAt!.toLocaleString()}`: ''}</p>
+                    {endsAt ?  `${endsAt!.toLocaleString()}` : ''}
+                </Card.Section> 
         </Card>
     </>
 }
