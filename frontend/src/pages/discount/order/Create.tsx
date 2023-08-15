@@ -44,7 +44,6 @@ export function DiscountOrderCreate() {
         shippingDiscounts: false
     })
     const handleChange = (event: any) => {
-        console.log('evento handleChange', event)
         if(event.title)setTitle(event.title)
         if(event.description) setDescription(event.description)
         if(event.type === "amount" || event.type === "percent")setDiscountType(event.type)
@@ -87,7 +86,6 @@ export function DiscountOrderCreate() {
                 "shippingDiscounts": combinesWith.shippingDiscounts
             }
         }
-        console.log('submit', body)
         let response = await authenticatedFetch("https://tiki.shopify.brgweb.com.br/api/latest/discount", {
              method: "POST",
              headers: { "Content-Type": "application/json" },
