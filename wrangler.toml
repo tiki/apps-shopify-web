@@ -1,5 +1,5 @@
-name = "intg-shopify-backend"
-main = "dist/worker.js"
+name = "intg-shopify"
+main = "backend/dist/worker.js"
 compatibility_date = "2023-06-05"
 
 kv_namespaces = [

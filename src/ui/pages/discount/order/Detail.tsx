@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
-import { DiscountReq } from '../../../../../src/api/discount/discount-req'
+import { DiscountReq } from '../../../../../api/discount/discount-req'
 
 export function DiscountOrderDetail() {
 

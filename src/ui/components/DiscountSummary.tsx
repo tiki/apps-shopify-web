@@ -5,9 +5,9 @@
 import React, { useState } from 'react';
 import { SummaryCard, DiscountMethod } from "@shopify/discount-app-components";
 import { Card } from '@shopify/polaris';
-import { DiscountReq } from '../../../src/api/discount/discount-req'
+import { DiscountReq } from '../../api/discount/discount-req'
 
-import { DiscountReqCombine } from '../../../src/api/discount/discount-req-combine'
+import { DiscountReqCombine } from '../../api/discount/discount-req-combine'
 
 
 interface DiscountSummaryProps {
@@ -23,7 +23,7 @@ interface DiscountSummaryProps {
     endsAt: Date | undefined
 }
 
-export function DiscountSummary( {
+export function DiscountSummary({
     title,
     description,
     discountType,
@@ -34,7 +34,7 @@ export function DiscountSummary( {
     combinesWith,
     startsAt,
     endsAt,
-} : DiscountSummaryProps ) {
+}: DiscountSummaryProps) {
     console.log(title);
     console.log("rebuild");
     const [fields, setFields] = useState({
@@ -49,7 +49,7 @@ export function DiscountSummary( {
         startsAt,
         endsAt,
     })
-    return <> 
+    return <>
         <Card>
             <Card.Section title="Title">
                 <p>Title: {fields.title}</p>
@@ -69,15 +69,15 @@ export function DiscountSummary( {
             </Card.Section>
         </Card>
         <Card>
-                <Card.Section title="Combines with">
-                    <p>Order Discounts: {fields.combinesWith.orderDiscounts ? 'Yes' : 'No'}</p>
-                    <p>Product Discounts: {fields.combinesWith.productDiscounts ? 'Yes' : 'No'}</p>
-                    <p>Shipping Discounts: {fields.combinesWith.shippingDiscounts ? 'Yes' : 'No'}</p>
-                </Card.Section>
-                <Card.Section title="Active dates">
-                    <p>Starts at: {fields.startsAt.toLocaleTimeString()}</p>
-                    {fields.endsAt ? `<p>Ends at: ${fields.endsAt!.toLocaleDateString()}</p>` : ''}
-                </Card.Section>
+            <Card.Section title="Combines with">
+                <p>Order Discounts: {fields.combinesWith.orderDiscounts ? 'Yes' : 'No'}</p>
+                <p>Product Discounts: {fields.combinesWith.productDiscounts ? 'Yes' : 'No'}</p>
+                <p>Shipping Discounts: {fields.combinesWith.shippingDiscounts ? 'Yes' : 'No'}</p>
+            </Card.Section>
+            <Card.Section title="Active dates">
+                <p>Starts at: {fields.startsAt.toLocaleTimeString()}</p>
+                {fields.endsAt ? `<p>Ends at: ${fields.endsAt!.toLocaleDateString()}</p>` : ''}
+            </Card.Section>
         </Card>
     </>
 }

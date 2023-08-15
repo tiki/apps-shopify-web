@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { DiscountReq } from '../../../../../src/api/discount/discount-req'
+import { DiscountReq } from '../../../../../api/discount/discount-req'
 
 import { Redirect } from '@shopify/app-bridge/actions'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'

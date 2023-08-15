@@ -9,7 +9,7 @@ import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components'
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
 
-import { DiscountReq } from '../../../../../src/api/discount/discount-req'
+import { DiscountReq } from '../../../../../api/discount/discount-req'
 
 import {
     MinReqsCard,
@@ -18,7 +18,8 @@ import {
     CombinationsCard,
     AppliesToChoices,
     TitleAndDescription,
-    DiscountSummary} from '../../../components'
+    DiscountSummary
+} from '../../../../components'
 import { useState } from "react"
 import { Redirect } from '@shopify/app-bridge/actions'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
@@ -30,13 +31,13 @@ export function DiscountProductCreate() {
     const app = useAppBridge();
     const redirect = Redirect.create(app);
     const authenticatedFetch = useAuthenticatedFetch();
-    
+
     const [fields, setFields] = useState<DiscountReq>({
         "title": "",
         "startsAt": new Date(),
         "endsAt": undefined,
         "metafields": {
-        "description": "",
+            "description": "",
 
             "type": "product",
             "discountType": "amount",
@@ -54,7 +55,7 @@ export function DiscountProductCreate() {
         }
     })
 
-    
+
     const submit = async () => {
         let response = await authenticatedFetch("https://tiki.shopify.brgweb.com.br/api/latest/discount", {
             method: "POST",
@@ -103,7 +104,7 @@ export function DiscountProductCreate() {
                             </Card.Section>
                             <Card.Section title="Applies To">
                                 <AppliesToChoices onChange={(list: Resource[], resource: 'all' | 'products' | 'collections') => {
-                                     switch (resource) {
+                                    switch (resource) {
                                         case 'all':
                                             fields.metafields.products = []
                                             fields.metafields.collections = []
@@ -162,7 +163,7 @@ export function DiscountProductCreate() {
                     </form>
                 </Layout.Section>
                 <Layout.Section secondary>
-                    <DiscountSummary 
+                    <DiscountSummary
                         title={fields.title}
                         description={fields.metafields.description}
                         discountType={fields.metafields.discountType}

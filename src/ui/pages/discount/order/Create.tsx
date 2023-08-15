@@ -12,7 +12,7 @@ import { AppliesTo, RequirementType } from '@shopify/discount-app-components'
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 
-import { DiscountReq } from '../../../../../src/api/discount/discount-req'
+import { DiscountReq } from '../../../../../api/discount/discount-req'
 import {
     MinReqsCard,
     ActiveDatesCard,
