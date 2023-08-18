@@ -3,5 +3,5 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export * from './Create'
-export * from './Detail'
+export * from './Create';
+export * from './Detail';

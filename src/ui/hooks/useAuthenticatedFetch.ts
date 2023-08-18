@@ -3,10 +3,10 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { authenticatedFetch } from "@shopify/app-bridge-utils";
-import { useAppBridge } from "@shopify/app-bridge-react";
-import { AppBridgeState, ClientApplication } from "@shopify/app-bridge";
-import { Redirect } from "@shopify/app-bridge/actions";
+import { authenticatedFetch } from '@shopify/app-bridge-utils';
+import { useAppBridge } from '@shopify/app-bridge-react';
+import { AppBridgeState, ClientApplication } from '@shopify/app-bridge';
+import { Redirect } from '@shopify/app-bridge/actions';
 
 export function useAuthenticatedFetch() {
   const app = useAppBridge();
@@ -18,19 +18,22 @@ export function useAuthenticatedFetch() {
     return response;
   };
 }
-  
-function checkHeadersForReauthorization(headers: Headers, app: ClientApplication<AppBridgeState>) {
-    if (headers.get("X-Shopify-API-Request-Failure-Reauthorize") === "1") {
-        const authUrlHeader =
-        headers.get("X-Shopify-API-Request-Failure-Reauthorize-Url") ||
-        `/api/auth`;
 
-        const redirect = Redirect.create(app);
-        redirect.dispatch(
-        Redirect.Action.REMOTE,
-        authUrlHeader.startsWith("/")
-            ? `https://${window.location.host}${authUrlHeader}`
-            : authUrlHeader
-        );
-    }
+function checkHeadersForReauthorization(
+  headers: Headers,
+  app: ClientApplication<AppBridgeState>,
+) {
+  if (headers.get('X-Shopify-API-Request-Failure-Reauthorize') === '1') {
+    const authUrlHeader =
+      headers.get('X-Shopify-API-Request-Failure-Reauthorize-Url') ||
+      `/api/auth`;
+
+    const redirect = Redirect.create(app);
+    redirect.dispatch(
+      Redirect.Action.REMOTE,
+      authUrlHeader.startsWith('/')
+        ? `https://${window.location.host}${authUrlHeader}`
+        : authUrlHeader,
+    );
+  }
 }

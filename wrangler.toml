@@ -1,9 +1,9 @@
 name = "intg-shopify"
-main = "backend/dist/worker.js"
+main = "dist/worker.js"
 compatibility_date = "2023-06-05"
 
 kv_namespaces = [
-    { binding = "KV_STORE", id = "3bd0c27a6cf04d4382922b5493bbfe86" }
+    { binding = "KV_STORE", id = "3bd0c27a6cf04d4382922b5493bbfe86", preview_id = "0e07af1e82194f03b230d020c17f01fa" }
 ]
 
 [vars]

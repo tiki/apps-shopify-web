@@ -3,6 +3,6 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export * from './HomePage'
-export * from './discount/order'
-export * from './discount/product'
+export * from './HomePage';
+export * from './discount/order';
+export * from './discount/product';
