@@ -46,7 +46,7 @@ export async function redact(): Promise<Response> {
 
 export async function uninstall(
   request: IRequest,
-  env: Env
+  env: Env,
 ): Promise<Response> {
   const shop = request.headers.get('X-Shopify-Shop-Domain');
   Throw.ifNull(shop, 'X-Shopify-Shop-Domain');

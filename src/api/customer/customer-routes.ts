@@ -31,20 +31,20 @@ export async function discount(request: IRequest, env: Env): Promise<Response> {
   Throw.ifNull(signature, 'X-Tiki-Signature');
 
   const tiki = new Tiki(env);
-  // const claims = await tiki.verifyEcdsa(token.replace('Bearer ', ''));
-  // const appId = claims.get('sub') as string;
-  // const pubKey = await tiki.pubkey(address, appId);
+  const claims = await tiki.verifyEcdsa(token.replace('Bearer ', ''));
+  const appId = claims.get('sub') as string;
+  const pubKey = await tiki.pubkey(address, appId);
   const body = await request.text();
-  // const validSig = await tiki.verifyRsa(pubKey, signature as string, body);
-  // if (!validSig) {
-  //   throw new API.ErrorBuilder().message('Invalid X-Tiki-Signature').error(403);
-  // }
+  const validSig = await tiki.verifyRsa(pubKey, signature as string, body);
+  if (!validSig) {
+    throw new API.ErrorBuilder().message('Invalid X-Tiki-Signature').error(403);
+  }
   const json: CustomerDiscount = JSON.parse(body);
-    const adminToken = await tiki.admin();
-    const registry = await tiki.registry(adminToken, address, appId);
-    if (Number(registry.id) !== json.customerId) {
-      throw new API.ErrorBuilder().message('Invalid X-Tiki-Address').error(403);
-    }
+  const adminToken = await tiki.admin();
+  const registry = await tiki.registry(adminToken, address, appId);
+  if (Number(registry.id) !== json.customerId) {
+    throw new API.ErrorBuilder().message('Invalid X-Tiki-Address').error(403);
+  }
 
   const shopify = new Shopify(json.shop, env);
   await shopify.setDiscountAllowed(json.customerId, json.discountId);
