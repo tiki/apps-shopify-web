@@ -9,7 +9,7 @@ import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components'
 import { Card, Layout, Page, PageActions } from '@shopify/polaris'
 
-import { DiscountReq } from '../../../../../api/discount/discount-req'
+import { DiscountReq } from '../../../../api/discount/discount-req'
 
 import {
     MinReqsCard,
@@ -30,7 +30,6 @@ export function DiscountProductCreate() {
     const app = useAppBridge();
     const redirect = Redirect.create(app);
     const authenticatedFetch = useAuthenticatedFetch();
-    
     const [fields, setFields] = useState<DiscountReq>({
         "title": "",
         "startsAt": new Date(),
@@ -53,19 +52,71 @@ export function DiscountProductCreate() {
             "shippingDiscounts": false
         }
     })
-
-    
+    const [title, setTitle] = useState<string>()
+    const [description, setDescription] = useState<string>()
+    const [startsAt, setStartsAt] = useState<Date>(new Date())
+    const [endsAt, setEndsAt] = useState<Date>()
+    const [discountType, setDiscountType] = useState<"amount" | "percentage">("amount")
+    const [discountValue, setDiscountValue] = useState<number>(10)
+    const [minValue, setMinValue] = useState<number>()
+    const [minQty, setMinQty] = useState<number>()
+    const [onePerUser, setOnePerUser] = useState<boolean>(true)
+    const [combinesWith, setCombines] = useState({
+        orderDiscounts: false,
+        productDiscounts: false,
+        shippingDiscounts: false
+    })
+    const handleChange = (event: any) => {
+        if(event.title)setTitle(event.title)
+        if(event.description) setDescription(event.description)
+        if(event.type === "amount" || event.type === "percent")setDiscountType(event.type)
+        if(event.value && !event.type) setDiscountValue(event.value)
+        if(event.type === 'SUBTOTAL') {
+            if(event.value) setMinValue(event.value)
+            setMinQty(0)
+        }
+        if(event.type === 'QUANTITY') {
+            if(event.qty) setMinQty(event.qty)
+            setMinValue(0)
+        }
+        if(event.oncePerCustomer !== undefined) setOnePerUser(event.oncePerCustomer)
+        if(event.shippingDiscounts !== undefined && event.productDiscounts !== undefined) setCombines({
+            orderDiscounts: false,
+            productDiscounts: event.productDiscounts,
+            shippingDiscounts: event.shippingDiscounts
+        })
+    }
+       
     const submit = async () => {
-        let response = await authenticatedFetch("https://tiki.shopify.brgweb.com.br/api/latest/discount", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fields)
-        });
-        const data = (await response.json());
-        console.log(JSON.stringify(data));
-        redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-            name: Redirect.ResourceType.Discount,
-        });
+        const body: DiscountReq = {
+            "title": title!,
+            "startsAt": startsAt!,
+            "endsAt": endsAt!,
+            "metafields": {
+                "type": "order",
+                "description": description!,
+                "discountType": discountType!,
+                "discountValue": discountValue!,
+                "minValue": minValue!,
+                "minQty": minQty!,
+                "onePerUser": onePerUser!,
+                "products": fields.metafields.products,
+                "collections": fields.metafields.collections
+            },
+            "combinesWith": {
+                "orderDiscounts": false,
+                "productDiscounts": false,
+                "shippingDiscounts": combinesWith.shippingDiscounts
+            }
+        }
+        await authenticatedFetch("https://tiki.shopify.brgweb.com.br/api/latest/discount", {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify(body)
+       });
+       redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+           name: Redirect.ResourceType.Discount,
+       });
         return { status: "success" };
     }
 
@@ -82,27 +133,15 @@ export function DiscountProductCreate() {
                     <form>
                         <Card>
                             <Card.Section title="Title">
-                                <TitleAndDescription onChange={(values) => {
-                                    fields.title = values.title
-                                    fields.metafields.description = values.description
-                                    setFields(fields)
-                                }} />
+                                <TitleAndDescription onChange={handleChange} />
                             </Card.Section>
                             <Card.Section title="Value">
                                 <DiscountAmount
-                                    onChange={({ type, value }) => {
-                                        if (type !== undefined) {
-                                            fields.metafields.discountType = type
-                                        }
-                                        if (value !== undefined) {
-                                            fields.metafields.discountValue = value
-                                        }
-                                        setFields(fields)
-                                    }}
+                                  onChange={handleChange}
                                 />
                             </Card.Section>
                             <Card.Section title="Applies To">
-                                <AppliesToChoices onChange={(list: Resource[], resource: 'all' | 'products' | 'collections') => {
+                            <AppliesToChoices onChange={(list: Resource[], resource: 'all' | 'products' | 'collections') => {
                                      switch (resource) {
                                         case 'all':
                                             fields.metafields.products = []
@@ -125,54 +164,32 @@ export function DiscountProductCreate() {
                         <MinReqsCard
                             appliesTo={AppliesTo.Products}
                             type={RequirementType.None}
-                            subTotal={fields.metafields.minValue}
-                            qty={fields.metafields.minQty}
-                            onChange={({ type, value, qty }) => {
-                                switch (type) {
-                                    case RequirementType.Quantity:
-                                        fields.metafields.minQty = qty
-                                        fields.metafields.minValue = 0
-                                        break;
-                                    case RequirementType.Subtotal:
-                                        fields.metafields.minValue = value
-                                        fields.metafields.minQty = 0
-                                        break;
-                                    case RequirementType.None:
-                                        fields.metafields.minValue = 0
-                                        fields.metafields.minQty = 0
-                                        break;
-                                }
-                                setFields(fields)
-                            }}
+                            subTotal={minValue}
+                            qty={minQty}
+                            onChange={handleChange}
                         />
-                        <CombinationsCard onChange={(combinations) => {
-                            fields.combinesWith.orderDiscounts = combinations.orderDiscounts
-                            fields.combinesWith.productDiscounts = combinations.productDiscounts
-                            fields.combinesWith.shippingDiscounts = combinations.shippingDiscounts
-                            setFields(fields)
-                        }} />
+                        <CombinationsCard discountClassProp="PRODUCT" onChange={handleChange} />
                         <ActiveDatesCard
-                            onChange={(s: string, e: string) => {
-                                fields.startsAt = new Date(s)
-                                fields.endsAt = e ? new Date(e) : undefined
-                                setFields(fields)
+                             onChange={(start: string, end: string) => {
+                                setStartsAt(new Date(start))
+                                if(end) setEndsAt(new Date(end)) 
                             }}
-                            startsAt={fields.startsAt.toUTCString()}
-                            endsAt={fields.endsAt ? fields.endsAt.toUTCString() : ''} />
+                            startsAt={(new Date()).toUTCString()}
+                            endsAt={(new Date()).toUTCString()}/>
                     </form>
                 </Layout.Section>
                 <Layout.Section secondary>
                     <DiscountSummary 
-                        title={fields.title}
-                        description={fields.metafields.description}
-                        discountType={fields.metafields.discountType}
-                        discountValue={fields.metafields.discountValue}
-                        minValue={fields.metafields.minValue}
-                        minQty={fields.metafields.minQty}
-                        onePerUser={fields.metafields.onePerUser}
-                        combinesWith={fields.combinesWith}
-                        startsAt={fields.startsAt}
-                        endsAt={fields.endsAt}
+                        title={title!}
+                        description={description!}
+                        discountType={discountType!}
+                        discountValue={discountValue!}
+                        minValue={minValue!}
+                        minQty={minQty!}
+                        onePerUser={onePerUser!}
+                        combinesWith={combinesWith!}
+                        startsAt={startsAt}
+                        endsAt={endsAt}
                     />
                 </Layout.Section>
                 <Layout.Section>

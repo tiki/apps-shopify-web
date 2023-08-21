@@ -13,7 +13,8 @@ export interface Combinations {
     shippingDiscounts: boolean
 }
 
-export const CombinationsCard = ({onChange = console.log, discountClass = DiscountClass.Product}) => {
+
+export const CombinationsCard = ({onChange = console.log, discountClass = DiscountClass, discountClassProp = ''}) => {
     const [combinesWith, setCombinesWith] = useState({
       orderDiscounts: false,
       productDiscounts: false,
@@ -34,7 +35,7 @@ export const CombinationsCard = ({onChange = console.log, discountClass = Discou
           value: combinesWith,
           onChange: onChangeCallback,
         }}
-        discountClass={discountClass}
+        discountClass={(discountClassProp === 'ORDER' ? discountClass.Order : discountClass.Product)}
         discountDescriptor=""
       />
     );
