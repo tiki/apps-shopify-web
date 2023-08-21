@@ -29,7 +29,7 @@ describe('Shopify Verification Tests', function () {
     const shopify = new Shopify('dummy', env);
     const signedQuery = await Verify.signedQuery();
     const request = new Request(
-      `https://shopify-test.mytiki.com/?${signedQuery}`
+      `https://shopify-test.mytiki.com/?${signedQuery}`,
     );
     const success = await shopify.verifyOAuth(request);
     expect(success);

@@ -30,13 +30,14 @@ export class ShopifyDiscount extends ShopifyMeta {
   async createDiscount(discount: DiscountReq, appId: string): Promise<string> {
     const id = UUID.v4();
     const accessToken = await this.getToken();
+    console.log('token', accessToken);
+    console.log('create', this._functionIdOrder);
     const req: ShopifyDiscountCreate = {
       combinesWith: {
         orderDiscounts: discount.combinesWith.orderDiscounts,
         productDiscounts: discount.combinesWith.productDiscounts,
         shippingDiscounts: discount.combinesWith.shippingDiscounts,
       },
-      description: discount.description,
       endsAt: discount.endsAt,
       functionId:
         discount.metafields.type === 'order'
@@ -71,6 +72,8 @@ export class ShopifyDiscount extends ShopifyMeta {
       startsAt: discount.startsAt,
       title: discount.title,
     };
+    console.log('dps');
+    console.log('req', req);
     const mutationQuery = mutation(
       {
         operation: 'discountAutomaticAppCreate',
@@ -90,9 +93,9 @@ export class ShopifyDiscount extends ShopifyMeta {
       undefined,
       {
         operationName: 'DiscountAutomaticAppCreate',
-      }
+      },
     );
-    return JSON.stringify(mutationQuery);
+    console.log('mutationQuery', mutationQuery);
     const res = await fetch(
       `https://${this.shopDomain}/admin/api/2023-04/graphql.json`,
       {
@@ -103,7 +106,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           .set(ShopifyAuth.tokenHeader, accessToken)
           .build(),
         body: JSON.stringify(mutationQuery),
-      }
+      },
     );
     if (res.status !== 200) {
       const body = await res.text();
@@ -112,6 +115,7 @@ export class ShopifyDiscount extends ShopifyMeta {
         .detail(body)
         .error(res.status);
     } else {
+      console.log('res200');
       await this.setMetafields([
         {
           namespace: ShopifyMeta.namespace,
@@ -120,7 +124,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           value: JSON.stringify({
             amount: discount.metafields.discountValue,
             type: discount.metafields.discountType,
-            description: discount.description,
+            description: discount.metafields.description,
             expiry: discount.endsAt,
             reference: id,
           }),
@@ -135,7 +139,7 @@ export class ShopifyDiscount extends ShopifyMeta {
     const key = 'discount_allowed';
     const cur = await this.getCustomerMetafield(customer, key);
     const allowedList: Array<string> = JSON.parse(
-      cur.data.customer.metafield?.value ?? '[]'
+      cur.data.customer.metafield?.value ?? '[]',
     );
     allowedList.push(id);
     await this.setMetafields([
@@ -150,7 +154,7 @@ export class ShopifyDiscount extends ShopifyMeta {
   }
 
   async getDiscountIds(
-    titles: Array<string>
+    titles: Array<string>,
   ): Promise<ShopifyData<ShopifyDiscountIdsRsp>> {
     const filter = `title:${titles.map((title) => `"${title}"`).join(' OR ')}`;
     const accessToken = await this.getToken();
@@ -196,7 +200,7 @@ export class ShopifyDiscount extends ShopifyMeta {
       undefined,
       {
         operationName: 'DiscountNodes',
-      }
+      },
     );
     return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
@@ -271,7 +275,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           .set(ShopifyAuth.tokenHeader, accessToken)
           .build(),
         body: JSON.stringify(gql),
-      }
+      },
     );
     const discountIdResp: ShopifyData<ShopifyDiscountIdRsp> =
       await response.json();
@@ -281,7 +285,7 @@ export class ShopifyDiscount extends ShopifyMeta {
       discountIdResp.data.discountNode.metafield
     ) {
       const discountMeta: ShopifyDiscountMeta = JSON.parse(
-        discountIdResp.data.discountNode.metafield.value
+        discountIdResp.data.discountNode.metafield.value,
       );
       const discountData = discountIdResp.data.discountNode.discount;
       const discount = {
@@ -311,7 +315,7 @@ export class ShopifyDiscount extends ShopifyMeta {
     const key = 'discount_applied';
     const cur = await this.getCustomerMetafield(customer, key);
     const appliedList: Array<string> = JSON.parse(
-      cur.data.customer.metafield?.value ?? '[]'
+      cur.data.customer.metafield?.value ?? '[]',
     );
     await this.setMetafields([
       {

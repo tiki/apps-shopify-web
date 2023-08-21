@@ -8,7 +8,6 @@ import { ShopifyDiscountCombine } from './shopify-discount-combine';
 
 export interface ShopifyDiscountCreate {
   combinesWith: ShopifyDiscountCombine;
-  description: string;
   endsAt?: Date;
   functionId: string;
   metafields: Array<ShopifyMetafield>;

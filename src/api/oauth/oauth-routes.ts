@@ -10,7 +10,7 @@ import { IRequest } from 'itty-router';
 
 export async function authorize(
   request: IRequest,
-  env: Env
+  env: Env,
 ): Promise<Response> {
   const shop = request.query.shop as string;
   const baseUrl = new URL(request.url).hostname;
@@ -23,7 +23,7 @@ export async function authorize(
   const shopify = new Shopify(shop, env);
   await shopify.verifyOAuth(request);
   const authUrl = shopify.authorize(
-    `https://${baseUrl}/api/latest/oauth/token`
+    `https://${baseUrl}/api/latest/oauth/token`,
   );
   return new Response(null, {
     status: 302,
@@ -54,7 +54,7 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
       new Tiki(env),
       shopify,
       appInstallation.data.currentAppInstallation.id,
-      reqUrl.hostname
+      reqUrl.hostname,
     );
   }
   return new Response(null, {
@@ -70,23 +70,23 @@ async function onInstall(
   tiki: Tiki,
   shopify: Shopify,
   installId: string,
-  baseUrl: string
+  baseUrl: string,
 ): Promise<void> {
   const shopifyAccessToken = await shopify.getToken();
   const tikiAccessToken = await tiki.login(
     shopify.shopDomain,
-    shopifyAccessToken
+    shopifyAccessToken,
   );
   const tikiApp = await tiki.createApp(tikiAccessToken, shopify.shopDomain);
   const tikiPublicKey = await tiki.createKey(
     tikiAccessToken,
     tikiApp.appId,
-    true
+    true,
   );
   const tikiPrivateKey = await tiki.createKey(
     tikiAccessToken,
     tikiApp.appId,
-    false
+    false,
   );
   await shopify.saveKeys(installId, tikiPublicKey, tikiPrivateKey);
   await shopify.registerOrderPaidWebhook(baseUrl);

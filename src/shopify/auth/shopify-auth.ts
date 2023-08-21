@@ -75,7 +75,7 @@ export class ShopifyAuth {
     const req = request.clone();
     const signature = req.headers.get(ShopifyAuth.signHeader) ?? '';
     const signatureBytes = Uint8Array.from(atob(signature), (c) =>
-      c.charCodeAt(0)
+      c.charCodeAt(0),
     );
     const body = await req.text();
     return this.verify(signatureBytes, new TextEncoder().encode(body));
@@ -90,12 +90,12 @@ export class ShopifyAuth {
     const match = signature.match(/.{1,2}/g);
     if (match == null) return false;
     const signatureBytes = Uint8Array.from(
-      match.map((byte) => parseInt(byte, 16))
+      match.map((byte) => parseInt(byte, 16)),
     );
 
     return this.verify(
       signatureBytes,
-      new TextEncoder().encode(params.toString())
+      new TextEncoder().encode(params.toString()),
     );
   }
 
@@ -105,7 +105,7 @@ export class ShopifyAuth {
   static async verifySession(
     jwt: string,
     id: string,
-    secret: string
+    secret: string,
   ): Promise<ShopifyJwt> {
     const alg = {
       name: 'HMAC',
@@ -116,7 +116,7 @@ export class ShopifyAuth {
       new TextEncoder().encode(secret),
       alg,
       false,
-      ['verify']
+      ['verify'],
     );
     const claims = await JWT.decode(jwt, key, {
       algorithm: alg,
@@ -136,14 +136,14 @@ export class ShopifyAuth {
 
   private async verify(
     signature: ArrayBuffer,
-    data: ArrayBuffer
+    data: ArrayBuffer,
   ): Promise<boolean> {
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
       new TextEncoder().encode(this._secretKey),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
-      ['verify']
+      ['verify'],
     );
     return await crypto.subtle.verify('HMAC', cryptoKey, signature, data);
   }

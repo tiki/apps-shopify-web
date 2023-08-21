@@ -20,9 +20,9 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
   const claims = await Shopify.verifySession(
     token.replace('Bearer ', ''),
     env.KEY_ID,
-    env.KEY_SECRET
+    env.KEY_SECRET,
   );
-
+  console.log(claims);
   const body: DiscountReq = await request.json();
   guard(body);
   Throw.ifNull(claims.dest);
@@ -34,7 +34,7 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
   const rsp: DiscountRsp = {
     id: await shopify.createDiscount(
       body,
-      install.data.currentAppInstallation.id
+      install.data.currentAppInstallation.id,
     ),
   };
   return json(rsp);
@@ -43,7 +43,7 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
 export async function get(
   request: IRequest,
   env: Env,
-  ctx: { id: string }
+  ctx: { id: string },
 ): Promise<Response> {
   const token = request.headers.get(API.Consts.AUTHORIZATION);
   if (token == null) {
@@ -55,7 +55,7 @@ export async function get(
   const claims = await Shopify.verifySession(
     token.replace('Bearer ', ''),
     env.KEY_ID,
-    env.KEY_SECRET
+    env.KEY_SECRET,
   );
   const shopify = new Shopify(claims.dest as string, env);
   const rsp = await shopify.getDiscountById(ctx.id);
@@ -73,10 +73,10 @@ function guard(req: DiscountReq): void {
   Throw.ifNull(req.combinesWith.orderDiscounts, 'combinesWith.orderDiscounts');
   Throw.ifNull(
     req.combinesWith.productDiscounts,
-    'combinesWith.productDiscounts'
+    'combinesWith.productDiscounts',
   );
   Throw.ifNull(
     req.combinesWith.shippingDiscounts,
-    'combinesWith.shippingDiscounts'
+    'combinesWith.shippingDiscounts',
   );
 }
