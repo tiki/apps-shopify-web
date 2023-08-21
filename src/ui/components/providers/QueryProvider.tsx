@@ -3,13 +3,13 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import React from "react";
+import React from 'react';
 import {
   QueryClient,
   QueryClientProvider,
   QueryCache,
   MutationCache,
-} from "react-query";
+} from 'react-query';
 
 export function QueryProvider(props: { children: React.ReactNode }) {
   const client = new QueryClient({
@@ -17,5 +17,7 @@ export function QueryProvider(props: { children: React.ReactNode }) {
     mutationCache: new MutationCache(),
   });
 
-  return <QueryClientProvider client={client}>{props.children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={client}>{props.children}</QueryClientProvider>
+  );
 }

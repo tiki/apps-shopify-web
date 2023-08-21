@@ -3,17 +3,16 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import React from 'react';
-import {ButtonGroup, Button} from '@shopify/polaris';
-import {useCallback, useState} from 'react';
+import React, { useCallback, useState } from 'react';
+import { ButtonGroup, Button } from '@shopify/polaris';
 
 export function DiscountAmountBtns({ onChange = console.log }) {
   const [activeButtonType, setActiveButtonType] = useState('amount');
 
   const handleButtonClick = useCallback(
     (type: string) => {
-        setActiveButtonType(type)
-        onChange(type)
+      setActiveButtonType(type);
+      onChange(type);
     },
     [activeButtonType],
   );
@@ -21,20 +20,18 @@ export function DiscountAmountBtns({ onChange = console.log }) {
   return (
     <ButtonGroup segmented>
       <Button
-        pressed={activeButtonType === "amount"}
+        pressed={activeButtonType === 'amount'}
         onClick={() => {
-            handleButtonClick("amount")
-         }
-        }
+          handleButtonClick('amount');
+        }}
       >
         Fixed $
       </Button>
       <Button
-        pressed={activeButtonType === "percent"}
+        pressed={activeButtonType === 'percent'}
         onClick={() => {
-            handleButtonClick("percent")
-         }
-        }
+          handleButtonClick('percent');
+        }}
       >
         Percent %
       </Button>

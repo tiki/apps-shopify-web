@@ -3,37 +3,38 @@
  * MIT license. See LICENSE file in root directory.
  */
 import React from 'react';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter } from 'react-router-dom';
 import {
   AppBridgeProvider,
   QueryProvider,
   PolarisProvider,
   DiscountProvider,
-} from "./components/providers";
-import { AppRouter } from "./components/AppRouter";
+} from './components/providers';
+import { AppRouter } from './components/AppRouter';
 import { NavigationMenu } from '@shopify/app-bridge-react';
 
 export default function App() {
-
   return (
     <PolarisProvider>
       <BrowserRouter>
         <AppBridgeProvider>
           <NavigationMenu
-                navigationLinks={[
-                  {
-                    label: 'Home',
-                    destination: '/',
-                  },
-                  {
-                    label: 'Terms',
-                    destination: '/terms',
-                  },
-                ]}
-                matcher={(link, location) => link.destination === location.toString()}
-            />
-            <DiscountProvider>
-              <QueryProvider>
+            navigationLinks={[
+              {
+                label: 'Home',
+                destination: '/',
+              },
+              {
+                label: 'Terms',
+                destination: '/terms',
+              },
+            ]}
+            matcher={(link, location) =>
+              link.destination === location.toString()
+            }
+          />
+          <DiscountProvider>
+            <QueryProvider>
               <AppRouter />
             </QueryProvider>
           </DiscountProvider>

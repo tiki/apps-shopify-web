@@ -10,12 +10,12 @@ import {
   TextContainer,
   Stack,
   Link,
-  Heading
-} from '@shopify/polaris'
-import { TitleBar } from '@shopify/app-bridge-react'
-import React from 'react'
+  Heading,
+} from '@shopify/polaris';
+import { TitleBar } from '@shopify/app-bridge-react';
+import React from 'react';
 
-export function HomePage () {
+export function HomePage() {
   return (
     <Page narrowWidth>
       <Layout>
@@ -31,7 +31,7 @@ export function HomePage () {
                 <TextContainer spacing="loose">
                   <Heading>Welcome to the TIKI app 🎉</Heading>
                   <p>
-                    Lorem ipsum dolor sit amet {' '}
+                    Lorem ipsum dolor sit amet{' '}
                     <Link url="https://polaris.shopify.com/" external>
                       Polaris design system
                     </Link>
@@ -48,9 +48,7 @@ export function HomePage () {
                     </Link>{' '}
                     UI library and components.
                   </p>
-                  <p>
-                    Ready to go? Start by configuring your app.{' '}
-                  </p>
+                  <p>Ready to go? Start by configuring your app. </p>
                   <p>
                     Learn more about building out with TIKI in{' '}
                     <Link
@@ -68,5 +66,5 @@ export function HomePage () {
         </Layout.Section>
       </Layout>
     </Page>
-  )
+  );
 }
