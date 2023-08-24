@@ -4,6 +4,8 @@
  */
 
 interface Env {
+  ASSETS: Fetcher;
+
   KEY_ID: string;
   KEY_SECRET: string;
   KV_STORE: KVNamespace;
