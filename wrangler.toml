@@ -1,10 +1,7 @@
-name = "intg-shopify"
-main = "dist/worker.js"
+name = "intg-shop"
+main = "dist/_worker.js"
 compatibility_date = "2023-06-05"
-
-kv_namespaces = [
-    { binding = "KV_STORE", id = "3bd0c27a6cf04d4382922b5493bbfe86", preview_id = "0e07af1e82194f03b230d020c17f01fa" }
-]
+node_compat = true
 
 [vars]
 KEY_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
@@ -21,7 +18,7 @@ JWK = "{\"kty\": \"EC\",\"use\": \"sig\",\"crv\": \"P-256\",\"kid\": \"0d2dbad0-
 account_id = "5c5263e05bb1e54242b1afb12a5c9259"
 
 routes = [
-    { pattern = "shopify.intg.mytiki.com/api/latest/*", zone_id = "7be31970110fa56b1f8e1fe915a8b938" }
+    { pattern = "intg-shop.mytiki.workers.dev/api/latest/*", zone_id = "7be31970110fa56b1f8e1fe915a8b938" }
 ]
 
 kv_namespaces = [
