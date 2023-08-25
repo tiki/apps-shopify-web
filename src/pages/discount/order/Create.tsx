@@ -18,9 +18,15 @@ import {
   TitleAndDescription,
   MaxUsageCheckbox,
   DiscountSummary,
+  BannerImageDescription,
 } from '../../../components';
+import { useMutation } from 'react-query';
+import { query, mutation } from 'gql-query-builder';
 
-export function DiscountOrderCreate() {
+
+
+
+export async function DiscountOrderCreate() {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
   const authenticatedFetch = useAuthenticatedFetch();
@@ -41,6 +47,8 @@ export function DiscountOrderCreate() {
     productDiscounts: false,
     shippingDiscounts: false,
   });
+  const [bannerFile, setBannerFile] = useState<File>();
+  const [offerDescription, setOfferDescription] = useState('');
   const handleChange = (event: any) => {
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
@@ -63,8 +71,98 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: event.shippingDiscounts,
       });
+      if(event.bannerDescription){
+        setOfferDescription(event.offerDescription)
+      }
+      if(event.bannerFile){
+        setBannerFile(event.bannerFile[0])
+      }
   };
 
+  // necessário transformar isso em query documents de fato
+    const stagedUploadsQuery = `mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
+      stagedUploadsCreate(input: $input) {
+        stagedTargets {
+          resourceUrl
+          url
+          parameters {
+            name
+            value
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `;;
+
+    // necessário transformar isso em query documents de fato
+    const COLLECTION_UPDATE = `mutation collectionUpdate($input: CollectionInput!) {
+      collectionUpdate(input: $input) {
+        collection {
+          id
+          image {
+            originalSrc
+          }
+        }
+        userErrors {
+          field
+          message
+        }
+      }
+    }
+  `
+
+  const [collectionUpdate] = useMutation(COLLECTION_UPDATE);
+  const [stagedUploadsCreate] = useMutation(stagedUploadsQuery);
+  let { data } = await stagedUploadsCreate({ variables: {
+    "input": [
+      {
+        "resource": "COLLECTION_IMAGE",
+        "filename": bannerFile?.name,
+        "mimeType": bannerFile!.type,
+        "fileSize": bannerFile!.size.toString(),
+        "httpMethod": "POST"
+      }
+    ]
+  }})
+  const [{ url, parameters }] = data.stagedUploadsCreate.stagedTargets
+
+const formData = new FormData()
+
+parameters.forEach(({name, value}) => {
+  formData.append(name, value)
+})
+
+formData.append('file', bannerFile!)
+
+const response = await fetch(url, {
+  method: 'POST',
+  body: formData
+})
+let imageForm: string
+if (response.ok) {
+  const key = parameters.find(p => p.name === 'key')
+  imageForm = `${url}/${key.value}`
+  await collectionUpdate({ variables: {
+      "input": {
+        "id": props.collectionId,
+        "image": {
+          "src": imageForm
+        }
+      }
+    }
+  })
+}
+//é necessário o collection Id.
+
+
+//considerando que o fluxo acima está correto, após corrigir o mutation
+// seria necessario apenas inserir o imageForm dentro do submit abaixo
+
+ 
   const submit = async () => {
     const body: DiscountReq = {
       title: title ?? '',
@@ -138,6 +236,9 @@ export function DiscountOrderCreate() {
             }}
             startsAt={new Date().toUTCString()}
             endsAt={new Date().toUTCString()}
+          />
+          <BannerImageDescription 
+          onChange={handleChange}
           />
         </Layout.Section>
         <Layout.Section secondary>
