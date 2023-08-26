@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /*
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in root directory.
@@ -14,19 +13,19 @@ export async function ui(request: IRequest, env: Env): Promise<Response> {
   const reqUrl = new URL(request.url);
   const shop = request.query.shop as string;
   if (shop == null) {
-    throw new API.ErrorBuilder()
-      .message('Missing required parameters.')
-      .detail('Requires shop.')
-      .error(401);
+    const headers = { ...reqHeaders, location: 'https://mytiki.com' };
+    return new Response(null, {
+      status: 302,
+      headers,
+    });
   }
-
   const shopify = new Shopify(shop, env);
-  const accessToken = await shopify.getToken();
-  const appInstallation = await shopify.getInstall(accessToken);
-  const keys = appInstallation.data?.currentAppInstallation.metafields?.nodes;
-  if (keys != null) {
+  try {
+    const accessToken = await shopify.getToken();
+    const appInstallation = await shopify.getInstall(accessToken);
+    const keys = appInstallation.data!.currentAppInstallation.metafields!.nodes;
     return env.ASSETS.fetch(request);
-  } else {
+  } catch {
     reqUrl.pathname = `${API.Consts.API_LATEST}/oauth/authorize`;
     redirectUrl = reqUrl.href;
     const headers = { ...reqHeaders, location: redirectUrl };
