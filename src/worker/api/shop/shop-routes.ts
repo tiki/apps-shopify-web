@@ -13,10 +13,20 @@ export async function ui(request: IRequest, env: Env): Promise<Response> {
   const reqUrl = new URL(request.url);
   const dotIndex = reqUrl.pathname.indexOf('.');
   if (dotIndex >= 0) {
+    const newRequestInit = {
+      method: request.method,
+      body: request.body,
+      redirect: request.redirect,
+      headers: request.headers,
+      cf: { apps: false },
+    };
     const slashPos = reqUrl.pathname.lastIndexOf('/');
     const pathname = reqUrl.pathname.slice(slashPos);
     reqUrl.pathname = pathname;
-    const newRequest = new Request(reqUrl.toString(), new Request(request));
+    const newRequest = new Request(
+      reqUrl.toString(),
+      new Request(request, newRequestInit),
+    );
     return env.ASSETS.fetch(newRequest);
   }
   const shop = request.query.shop as string;
