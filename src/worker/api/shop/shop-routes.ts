@@ -13,7 +13,11 @@ export async function ui(request: IRequest, env: Env): Promise<Response> {
   const reqUrl = new URL(request.url);
   const dotIndex = reqUrl.pathname.indexOf('.');
   if (dotIndex >= 0) {
-    return env.ASSETS.fetch(request);
+    const slashPos = reqUrl.pathname.lastIndexOf('/');
+    const pathname = reqUrl.pathname.slice(slashPos);
+    reqUrl.pathname = pathname;
+    const newRequest = new Request(reqUrl.toString(), new Request(request));
+    return env.ASSETS.fetch(newRequest);
   }
   const shop = request.query.shop as string;
   if (shop == null) {
