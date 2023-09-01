@@ -11,6 +11,10 @@ export async function ui(request: IRequest, env: Env): Promise<Response> {
   let redirectUrl: string;
   const reqHeaders = request.headers;
   const reqUrl = new URL(request.url);
+  const dotIndex = reqUrl.pathname.indexOf('.');
+  if (dotIndex >= 0) {
+    return env.ASSETS.fetch(request);
+  }
   const shop = request.query.shop as string;
   if (shop == null) {
     const headers = { ...reqHeaders, location: 'https://mytiki.com' };
