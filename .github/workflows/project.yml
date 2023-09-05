@@ -4,10 +4,23 @@ on:
   issues:
     types:
       - opened
+  pull_request:
+    types:
+      - opened
 
 jobs:
-  add-to-project:
-    name: Add issue to backlog
+  add-issue:
+    if: ${{ github.event_name == 'issues' && github.event.action == 'opened' }}
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: https://github.com/orgs/tiki/projects/1
+          github-token: ${{ secrets.GH_PROJECT_PAT }}
+  add-pr:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' }}
+    name: Add pull request to project
     runs-on: ubuntu-latest
     steps:
       - uses: actions/add-to-project@v0.5.0
