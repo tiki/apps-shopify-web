@@ -20,7 +20,13 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
 
   console.log(request.json());
 
-  // const order: OrderReq = await request.json();
+  /* 
+  1 - criar a interface do order req  
+  2 - verificar se o pedido tem um desconto da TIKI
+  3 - verificar se o usuário tem uma licença válida
+  4 - salva o desconto no perfil do usuário como desconto usado
+  5 - envia o desconto pra tiki
+  */
 
   // await consumeDiscount(shopify, order);
 
