@@ -18,26 +18,16 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
     throw new API.ErrorBuilder().message('Invalid signature').error(403);
   }
 
-  const order: OrderReq = await request.json();
-  // const discounts: Array<string> = [];
-  // order.discount_applications.forEach((discount) => {
-  //   if (discount.description.startsWith('TID: ')) {
-  //     const tid = discount.description.replace('TID: ', '');
-  //     discounts.push(tid);
-  //   }
-  // });
-  // await shopify.discountUsed(order.customer.id, discounts);
+  console.log(request.json());
 
-  await consumeDiscount(shopify, order);
+  // const order: OrderReq = await request.json();
+
+  // await consumeDiscount(shopify, order);
+
   return new Response(null, {
     status: 200,
   });
 }
-
-// a) is there a license for this customer that lets us ingest data?
-
-// b) is there a discount applied? is this discount a tiki discount? if so, save it to cust. metafield
-// find by title, sort by created, take top.
 
 async function consumeDiscount(shopify: Shopify, order: OrderReq) {
   if (
