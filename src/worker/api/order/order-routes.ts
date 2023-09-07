@@ -20,46 +20,48 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
   if (!success) {
     throw new API.ErrorBuilder().message('Invalid signature').error(403);
   }
-  const order = request.json()
-  const orderReq = toOrderReq(order)
- 
-  await consumeDiscount(shopify, orderReq, order);
+  const order = toOrderReq(await request.json())
+  await consumeDiscount(shopify, order);
   return new Response(null, {
     status: 200,
   });
 }
 
-async function consumeDiscount(shopify: Shopify, order: OrderReq, reqOrderTiki:any) {
+async function consumeDiscount(shopify: Shopify, order: OrderReq) {
   if (
     order.discountApplications == null ||
     order.discountApplications.length === 0
-  )
+    )
     return;
-  
-  const titles = order.discountApplications.map((discount) => discount.title);
+    const titles = order.discountApplications.map((discount) => discount.title);
 
-  const ids = await shopify.getDiscountIds(titles);
+   const ids = await shopify.getDiscountIds(titles);
   
-  const userMetafields = await shopify.getCustomerMetafield(order.customer!.id, 'discount_allowed')
-  
-  const allowedList: Array<string> = JSON.parse(
-    userMetafields.data.customer.metafield?.value ?? '[]',
-  );
-  
-  const tids: Array<string> = [];
-  ids.data.discountNodes.nodes.forEach((discount) => {
-    if (discount.metafield?.id != null) {
-      tids.push(discount.metafield.id);
-    }
-  });
+   const userMetafields = await shopify.getCustomerMetafield(order.customer!.id, 'discount_allowed')
+
+   const allowedList: Array<string> = JSON.parse(
+     userMetafields.data.customer.metafield?.value ?? '[]',
+   );
+
+   const tids: Array<string> = [];
+   ids.data.discountNodes.nodes.forEach((discount) => {
+     if (discount.metafield?.id != null) {
+       tids.push(discount.metafield.id);
+     }
+   });
+
   const allowedDiscounts: string[] = tids.filter(discount => allowedList.includes(discount));
+
+  if(allowedDiscounts.length <= 0) return;
 
   await shopify.discountUsed(order.customer!.id, allowedDiscounts);
 
-  return fetch(`https://echo.gestpostman/com/post`, {
+  return await fetch(`https://postman-echo.com/post`, {
     method: 'POST',
-    body: reqOrderTiki,
+    body: JSON.stringify(order),
   })
-    .then((res) => console.log(res.json()))
+    .then((response) => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error:', error))
 
 }
