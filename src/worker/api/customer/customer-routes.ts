@@ -31,10 +31,22 @@ export async function discount(request: IRequest, env: Env): Promise<Response> {
   Throw.ifNull(signature, 'X-Tiki-Signature');
 
   const tiki = new Tiki(env);
+  console.log('tiki', JSON.stringify(tiki));
   const claims = await tiki.verifyEcdsa(token.replace('Bearer ', ''));
+  console.log('claims', JSON.stringify(claims));
   const appId = claims.get('sub') as string;
+  console.log('appId', JSON.stringify(appId));
   const body = await request.text();
+  console.log('body', JSON.stringify(body));
   const json: CustomerDiscount = JSON.parse(body);
+  console.log('json', JSON.stringify(json));
+  const pubKey = await tiki.pubkey(address, appId);
+  console.log('pubKey', JSON.stringify(pubKey));
+  const validSig = await tiki.verifyRsa(pubKey, signature as string, body);
+  console.log('validSig', JSON.stringify(validSig));
+  if (!validSig) {
+    throw new API.ErrorBuilder().message('Invalid X-Tiki-Signature').error(403);
+  }
   const adminToken = await tiki.admin();
   const registry = await tiki.registry(adminToken, address, appId);
   if (Number(registry.id) !== json.customerId) {

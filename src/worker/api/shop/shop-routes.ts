@@ -74,6 +74,7 @@ export async function uninstall(
   }
 
   await shopify.removeToken();
+  // removekeys
 
   return new Response(null, {
     status: 200,
