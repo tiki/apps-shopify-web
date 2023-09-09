@@ -1,0 +1,7 @@
+auth_callback_path = ["/api/latest/oauth/authorize", "/api/latest/oauth/token"]
+
+webhooks_path = "/api/latest/shop/uninstall"
+
+[commands]
+dev = "npm run dev"
+build = "npm run build"

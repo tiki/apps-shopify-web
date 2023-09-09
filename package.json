@@ -6,7 +6,8 @@
   "scripts": {
     "build-worker": "tsc --project tsconfig.build.json",
     "build-ui": "NODE_ENV=production webpack --mode production",
-    "build": "npm run build-ui && npm run build-worker"
+    "build": "npm run build-ui && npm run build-worker",
+    "dev": "npm run build && npx wrangler pages dev dist"
   },
   "dependencies": {
     "@babel/core": "^7.22.5",
