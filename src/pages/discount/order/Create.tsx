@@ -114,47 +114,47 @@ export async function DiscountOrderCreate() {
     }
   `
 
-  const [collectionUpdate] = useMutation(COLLECTION_UPDATE);
-  const [stagedUploadsCreate] = useMutation(stagedUploadsQuery);
-  let { data } = await stagedUploadsCreate({ variables: {
-    "input": [
-      {
-        "resource": "COLLECTION_IMAGE",
-        "filename": bannerFile?.name,
-        "mimeType": bannerFile!.type,
-        "fileSize": bannerFile!.size.toString(),
-        "httpMethod": "POST"
-      }
-    ]
-  }})
-  const [{ url, parameters }] = data.stagedUploadsCreate.stagedTargets
+//   const [collectionUpdate] = useMutation(COLLECTION_UPDATE);
+//   const [stagedUploadsCreate] = useMutation(stagedUploadsQuery);
+//   let { data } = await stagedUploadsCreate({ variables: {
+//     "input": [
+//       {
+//         "resource": "COLLECTION_IMAGE",
+//         "filename": bannerFile?.name,
+//         "mimeType": bannerFile!.type,
+//         "fileSize": bannerFile!.size.toString(),
+//         "httpMethod": "POST"
+//       }
+//     ]
+//   }})
+//   const [{ url, parameters }] = data.stagedUploadsCreate.stagedTargets
 
-const formData = new FormData()
+// const formData = new FormData()
 
-parameters.forEach(({name, value}) => {
-  formData.append(name, value)
-})
+// parameters.forEach(({name, value}) => {
+//   formData.append(name, value)
+// })
 
-formData.append('file', bannerFile!)
+// formData.append('file', bannerFile!)
 
-const response = await fetch(url, {
-  method: 'POST',
-  body: formData
-})
-let imageForm: string
-if (response.ok) {
-  const key = parameters.find(p => p.name === 'key')
-  imageForm = `${url}/${key.value}`
-  await collectionUpdate({ variables: {
-      "input": {
-        "id": props.collectionId,
-        "image": {
-          "src": imageForm
-        }
-      }
-    }
-  })
-}
+// const response = await fetch(url, {
+//   method: 'POST',
+//   body: formData
+// })
+// let imageForm: string
+// if (response.ok) {
+//   const key = parameters.find(p => p.name === 'key')
+//   imageForm = `${url}/${key.value}`
+//   await collectionUpdate({ variables: {
+//       "input": {
+//         "id": props.collectionId,
+//         "image": {
+//           "src": imageForm
+//         }
+//       }
+//     }
+//   })
+// }
 //é necessário o collection Id.
 
 
