@@ -37,7 +37,7 @@ export async function discount(request: IRequest, env: Env): Promise<Response> {
   const json: CustomerDiscount = JSON.parse(body);
   const adminToken = await tiki.admin();
   const registry = await tiki.registry(adminToken, address, appId);
-  if (Number(registry.id) !== json.customerId) {
+  if (Number(registry.id) !== Number(json.customerId)) {
     throw new API.ErrorBuilder().message('Invalid X-Tiki-Address').error(403);
   }
 
