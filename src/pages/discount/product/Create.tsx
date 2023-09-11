@@ -146,8 +146,8 @@ export function DiscountProductCreate() {
               <LegacyCard.Section title="Value">
                 <DiscountAmount onChange={handleChange} />
               </LegacyCard.Section>
-              <LegacyCard.Section title="Applies To">
-                {/* <AppliesToChoices
+              {/* <LegacyCard.Section title="Applies To">
+                <AppliesToChoices
                   onChange={(
                     list: Resource[],
                     resource: 'all' | 'products' | 'collections',
@@ -168,8 +168,8 @@ export function DiscountProductCreate() {
                     }
                     setFields(fields);
                   }}
-                /> */}
-              </LegacyCard.Section>
+                /> 
+              </LegacyCard.Section> */}
             </LegacyCard>
             <MinReqsCard
               appliesTo={AppliesTo.Products}
