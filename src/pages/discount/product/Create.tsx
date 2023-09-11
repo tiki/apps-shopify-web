@@ -34,7 +34,6 @@ export function DiscountProductCreate() {
     endsAt: undefined,
     metafields: {
       description: '',
-
       type: 'product',
       discountType: 'amount',
       discountValue: 10,
@@ -99,7 +98,7 @@ export function DiscountProductCreate() {
       startsAt: startsAt ?? '',
       endsAt,
       metafields: {
-        type: 'order',
+        type: 'product',
         description: description ?? '',
         discountType: discountType ?? '',
         discountValue: discountValue ?? '',
