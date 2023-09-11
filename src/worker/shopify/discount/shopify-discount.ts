@@ -72,8 +72,6 @@ export class ShopifyDiscount extends ShopifyMeta {
       startsAt: discount.startsAt,
       title: discount.title,
     };
-    console.log('dps');
-    console.log('req', req);
     const mutationQuery = mutation(
       {
         operation: 'discountAutomaticAppCreate',
@@ -95,7 +93,6 @@ export class ShopifyDiscount extends ShopifyMeta {
         operationName: 'DiscountAutomaticAppCreate',
       },
     );
-    console.log('mutationQuery', mutationQuery);
     const res = await fetch(
       `https://${this.shopDomain}/admin/api/2023-04/graphql.json`,
       {
@@ -115,7 +112,6 @@ export class ShopifyDiscount extends ShopifyMeta {
         .detail(body)
         .error(res.status);
     } else {
-      console.log('res200');
       await this.setMetafields([
         {
           namespace: ShopifyMeta.namespace,

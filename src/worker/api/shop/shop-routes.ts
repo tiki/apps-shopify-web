@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /*
  * Copyright (c) TIKI Inc.
  * MIT license. See LICENSE file in root directory.
@@ -12,21 +11,39 @@ export async function ui(request: IRequest, env: Env): Promise<Response> {
   let redirectUrl: string;
   const reqHeaders = request.headers;
   const reqUrl = new URL(request.url);
+  const dotIndex = reqUrl.pathname.indexOf('.');
+  if (dotIndex >= 0) {
+    const newRequestInit = {
+      method: request.method,
+      body: request.body,
+      redirect: request.redirect,
+      headers: request.headers,
+      cf: { apps: false },
+    };
+    const slashPos = reqUrl.pathname.lastIndexOf('/');
+    const pathname = reqUrl.pathname.slice(slashPos);
+    reqUrl.pathname = pathname;
+    const newRequest = new Request(
+      reqUrl.toString(),
+      new Request(request, newRequestInit),
+    );
+    return env.ASSETS.fetch(newRequest);
+  }
   const shop = request.query.shop as string;
   if (shop == null) {
-    throw new API.ErrorBuilder()
-      .message('Missing required parameters.')
-      .detail('Requires shop.')
-      .error(401);
+    const headers = { ...reqHeaders, location: 'https://mytiki.com' };
+    return new Response(null, {
+      status: 302,
+      headers,
+    });
   }
-
   const shopify = new Shopify(shop, env);
-  const accessToken = await shopify.getToken();
-  const appInstallation = await shopify.getInstall(accessToken);
-  const keys = appInstallation.data?.currentAppInstallation.metafields?.nodes;
-  if (keys != null) {
+  try {
+    const accessToken = await shopify.getToken();
+    const appInstallation = await shopify.getInstall(accessToken);
+    const keys = appInstallation.data!.currentAppInstallation.metafields!.nodes;
     return env.ASSETS.fetch(request);
-  } else {
+  } catch {
     reqUrl.pathname = `${API.Consts.API_LATEST}/oauth/authorize`;
     redirectUrl = reqUrl.href;
     const headers = { ...reqHeaders, location: redirectUrl };
@@ -57,6 +74,7 @@ export async function uninstall(
   }
 
   await shopify.removeToken();
+  // removekeys
 
   return new Response(null, {
     status: 200,

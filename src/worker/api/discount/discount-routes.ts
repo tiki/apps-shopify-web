@@ -22,7 +22,6 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
     env.KEY_ID,
     env.KEY_SECRET,
   );
-  console.log(claims);
   const body: DiscountReq = await request.json();
   guard(body);
   Throw.ifNull(claims.dest);

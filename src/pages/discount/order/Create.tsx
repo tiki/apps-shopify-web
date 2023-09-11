@@ -186,7 +186,7 @@ if (response.ok) {
       },
     };
     await authenticatedFetch(
-      'https://tiki.shopify.brgweb.com.br/api/latest/discount',
+      'https://intg-shpfy.pages.dev/api/latest/discount',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

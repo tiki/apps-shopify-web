@@ -159,7 +159,7 @@ export class Tiki {
     data: string,
   ): Promise<boolean> {
     const cryptoKey = await crypto.subtle.importKey(
-      'raw',
+      'spki',
       key,
       { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
       false,
