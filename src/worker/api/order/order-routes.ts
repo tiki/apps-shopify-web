@@ -33,7 +33,8 @@ async function consumeDiscount(shopify: Shopify, order: OrderReq) {
     order.discountApplications.length === 0
     )
     return;
-    const titles = order.discountApplications.map((discount) => discount.title);
+  
+   const titles = order.discountApplications.map((discount) => discount.title);
 
    const ids = await shopify.getDiscountIds(titles);
   
