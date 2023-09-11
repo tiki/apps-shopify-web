@@ -5,25 +5,23 @@
 
 import { IRequest } from 'itty-router';
 import { Shopify } from '../../shopify/shopify';
-import { OrderReq } from './order-req';
+import { OrderReq, toOrderReq } from './order-req';
 import { Throw, API } from '@mytiki/worker-utils-ts';
 
 export async function paid(request: IRequest, env: Env): Promise<Response> {
+
   const shop = request.headers.get('X-Shopify-Shop-Domain');
+
   Throw.ifNull(shop, 'X-Shopify-Shop-Domain');
 
   const shopify = new Shopify(shop as string, env);
   const success = await shopify.verifyWebhook(request);
+
   if (!success) {
     throw new API.ErrorBuilder().message('Invalid signature').error(403);
   }
-
-  console.log(request.json());
-
-  // const order: OrderReq = await request.json();
-
-  // await consumeDiscount(shopify, order);
-
+  const order = toOrderReq(await request.json())
+  await consumeDiscount(shopify, order);
   return new Response(null, {
     status: 200,
   });
@@ -31,20 +29,39 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
 
 async function consumeDiscount(shopify: Shopify, order: OrderReq) {
   if (
-    order.discount_applications == null ||
-    order.discount_applications.length === 0
-  )
+    order.discountApplications == null ||
+    order.discountApplications.length === 0
+    )
     return;
+    const titles = order.discountApplications.map((discount) => discount.title);
 
-  const titles = order.discount_applications.map((discount) => discount.title);
-  const ids = await shopify.getDiscountIds(titles);
+   const ids = await shopify.getDiscountIds(titles);
+  
+   const userMetafields = await shopify.getCustomerMetafield(order.customer!.id, 'discount_allowed')
 
-  const tids: Array<string> = [];
-  ids.data.discountNodes.nodes.forEach((discount) => {
-    if (discount.metafield?.id != null) {
-      tids.push(discount.metafield.id);
-    }
-  });
+   const allowedList: Array<string> = JSON.parse(
+     userMetafields.data.customer.metafield?.value ?? '[]',
+   );
 
-  await shopify.discountUsed(order.customer.id, tids);
+   const tids: Array<string> = [];
+   ids.data.discountNodes.nodes.forEach((discount) => {
+     if (discount.metafield?.id != null) {
+       tids.push(discount.metafield.id);
+     }
+   });
+
+  const allowedDiscounts: string[] = tids.filter(discount => allowedList.includes(discount));
+
+  if(allowedDiscounts.length <= 0) return;
+
+  await shopify.discountUsed(order.customer!.id, allowedDiscounts);
+
+  return await fetch(`https://postman-echo.com/post`, {
+    method: 'POST',
+    body: JSON.stringify(order),
+  })
+    .then((response) => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error:', error))
+
 }
