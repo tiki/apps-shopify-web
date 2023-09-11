@@ -21,7 +21,6 @@ import {
   BannerImageDescription,
 } from '../../../components';
 import { useMutation } from 'react-query';
-import { query, mutation } from 'gql-query-builder';
 
 
 
