@@ -48,7 +48,9 @@ export function DiscountOrderCreate() {
   });
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
+
   const handleChange = (event: any) => {
+    console.log('teste', event)
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -97,69 +99,6 @@ export function DiscountOrderCreate() {
     }
   `;;
 
-    // necessário transformar isso em query documents de fato
-    const COLLECTION_UPDATE = `mutation collectionUpdate($input: CollectionInput!) {
-      collectionUpdate(input: $input) {
-        collection {
-          id
-          image {
-            originalSrc
-          }
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `
-
-//   const [collectionUpdate] = useMutation(COLLECTION_UPDATE);
-//   const [stagedUploadsCreate] = useMutation(stagedUploadsQuery);
-//   let { data } = await stagedUploadsCreate({ variables: {
-//     "input": [
-//       {
-//         "resource": "COLLECTION_IMAGE",
-//         "filename": bannerFile?.name,
-//         "mimeType": bannerFile!.type,
-//         "fileSize": bannerFile!.size.toString(),
-//         "httpMethod": "POST"
-//       }
-//     ]
-//   }})
-//   const [{ url, parameters }] = data.stagedUploadsCreate.stagedTargets
-
-// const formData = new FormData()
-
-// parameters.forEach(({name, value}) => {
-//   formData.append(name, value)
-// })
-
-// formData.append('file', bannerFile!)
-
-// const response = await fetch(url, {
-//   method: 'POST',
-//   body: formData
-// })
-// let imageForm: string
-// if (response.ok) {
-//   const key = parameters.find(p => p.name === 'key')
-//   imageForm = `${url}/${key.value}`
-//   await collectionUpdate({ variables: {
-//       "input": {
-//         "id": props.collectionId,
-//         "image": {
-//           "src": imageForm
-//         }
-//       }
-//     }
-//   })
-// }
-//é necessário o collection Id.
-
-
-//considerando que o fluxo acima está correto, após corrigir o mutation
-// seria necessario apenas inserir o imageForm dentro do submit abaixo
 
  
   const submit = async () => {
