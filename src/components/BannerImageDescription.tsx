@@ -1,8 +1,10 @@
-import {DropZone, LegacyStack, Thumbnail, Text} from '@shopify/polaris';
+/* global TikiSdk,TIKI_SETTINGS,ShopifyAnalytics,_st,Shopify, WINDOW */
+
+import {DropZone, LegacyStack, Thumbnail, Text, TextField} from '@shopify/polaris';
 import {NoteMinor} from '@shopify/polaris-icons';
 import {useState, useCallback} from 'react';
 
-export const BannerImageDescription = () => {
+export const BannerImageDescription = ({ onChange = console.log }) => {
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
   
@@ -15,15 +17,16 @@ export const BannerImageDescription = () => {
   const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
 
   const fileUpload = !bannerFile && <DropZone.FileUpload />;
+
   const uploadedFile = bannerFile && (
     <LegacyStack>
       <Thumbnail
         size="small"
         alt={bannerFile.name}
-        source={
-          validImageTypes.includes(bannerFile.type)
-            ? window.URL.createObjectURL(bannerFile)
-            : NoteMinor
+        source={ ''
+          // validImageTypes.includes(bannerFile.type)
+          //   ? //window.URL.createObjectURL(bannerFile)
+          //   : NoteMinor
         }
       />
       <div>
@@ -49,7 +52,7 @@ export const BannerImageDescription = () => {
             label="Discount Description"
             autoComplete=""
             value={offerDescription}
-            onChange={(value) => {
+            onChange={(value: string) => {
                 setOfferDescription(value);
             }}
         />

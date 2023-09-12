@@ -25,7 +25,7 @@ import { useMutation } from 'react-query';
 
 
 
-export async function DiscountOrderCreate() {
+export function DiscountOrderCreate() {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
   const authenticatedFetch = useAuthenticatedFetch();

@@ -27,7 +27,7 @@ import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
 import { useMutation } from 'react-query';
 
 
-export async function DiscountProductCreate() {
+export function DiscountProductCreate() {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
   const authenticatedFetch = useAuthenticatedFetch();
