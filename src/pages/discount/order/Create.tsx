@@ -129,50 +129,50 @@ export function DiscountOrderCreate() {
       // const url = target.url; 
       // const resourceUrl = target.resourceUrl;
 
-      const form = new FormData();
-      params.forEach(({ name, value }) => {
-        form.append(name, value);
-      });
-      form.append("file", bannerFile![0]);
+      // const form = new FormData();
+      // params.forEach(({ name, value }) => {
+      //   form.append(name, value);
+      // });
+      // form.append("file", bannerFile![0]);
 
-      await fetch(url, {
-        body: form,
-        headers: {
-          "Content-type": "multipart/form-data",
-          "Content-Length": bannerFile![0].bannerFile.size,  
-        },
-      })
+      // await fetch(url, {
+      //   body: form,
+      //   headers: {
+      //     "Content-type": "multipart/form-data",
+      //     "Content-Length": bannerFile![0].bannerFile.size,  
+      //   },
+      // })
 
-      const createFileQuery = mutation({
-        operation: 'fileCreate',
-        variables: {
-          alt: ''
-        },
-        fields: [
-          {
-            userErrors: ['message', 'field'],
-          },
-        ],
-      })
+      // const createFileQuery = mutation({
+      //   operation: 'fileCreate',
+      //   variables: {
+      //     alt: ''
+      //   },
+      //   fields: [
+      //     {
+      //       userErrors: ['message', 'field'],
+      //     },
+      //   ],
+      // })
 
-      const createFileVariables = {
-        files: {
-          alt: "alt-tag",
-          contentType: "IMAGE",
-          originalSource: resourceUrl, 
-        },
-      };
+      // const createFileVariables = {
+      //   files: {
+      //     alt: "alt-tag",
+      //     contentType: "IMAGE",
+      //     originalSource: resourceUrl, 
+      //   },
+      // };
 
-      const createFileQueryResult = await fetch( `${your_shopify_admin_url}/graphql.json`, {
-        method: 'post',
-        body: JSON.stringify({
-          query: createFileQuery,
-          variables: createFileVariables,
-        }),
-        headers: {
-          "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
-        },
-      })
+      // const createFileQueryResult = await fetch( `${your_shopify_admin_url}/graphql.json`, {
+      //   method: 'post',
+      //   body: JSON.stringify({
+      //     query: createFileQuery,
+      //     variables: createFileVariables,
+      //   }),
+      //   headers: {
+      //     "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
+      //   },
+      // })
 
 
   }
