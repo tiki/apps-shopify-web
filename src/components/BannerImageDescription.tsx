@@ -15,18 +15,17 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
   );
 
   const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
-
   const fileUpload = !bannerFile && <DropZone.FileUpload />;
-
+  const url = (window as any).URL.createObjectURL(bannerFile!)
   const uploadedFile = bannerFile && (
     <LegacyStack>
       <Thumbnail
         size="small"
         alt={bannerFile.name}
-        source={ ''
-          // validImageTypes.includes(bannerFile.type)
-          //   ? //window.URL.createObjectURL(bannerFile)
-          //   : NoteMinor
+        source={
+           validImageTypes.includes(bannerFile.type)
+             ? url
+             : NoteMinor
         }
       />
       <div>
