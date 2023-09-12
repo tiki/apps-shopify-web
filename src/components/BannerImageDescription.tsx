@@ -38,7 +38,10 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
 
   return (
     <>
-        <DropZone allowMultiple={false} onDrop={handleDropZoneDrop}
+        <DropZone allowMultiple={false} onDrop={()=>{
+          handleDropZoneDrop
+          onChange({bannerFile: bannerFile![0]})
+        }}
         label="Banner Discount Image"
         >
         {uploadedFile}
@@ -51,6 +54,7 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
             autoComplete=""
             value={offerDescription}
             onChange={(value: string) => {
+                onChange({offerDescription: value})
                 setOfferDescription(value);
             }}
         />
