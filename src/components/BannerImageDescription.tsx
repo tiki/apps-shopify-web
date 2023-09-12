@@ -1,4 +1,4 @@
-/* global TikiSdk,TIKI_SETTINGS,ShopifyAnalytics,_st,Shopify, WINDOW */
+/* global TikiSdk,TIKI_SETTINGS,ShopifyAnalytics,_st,Shopify, window */
 
 import {DropZone, LegacyStack, Thumbnail, Text, TextField} from '@shopify/polaris';
 import {NoteMinor} from '@shopify/polaris-icons';
@@ -16,18 +16,17 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
 
   const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
   const fileUpload = !bannerFile && <DropZone.FileUpload />;
-  const url = (window as any).URL.createObjectURL(bannerFile!)
   const uploadedFile = bannerFile && (
     <LegacyStack>
-      <Thumbnail
+      {/* <Thumbnail
         size="small"
         alt={bannerFile.name}
         source={
            validImageTypes.includes(bannerFile.type)
-             ? url
+             ? window.URL.createObjectURL(bannerFile!)
              : NoteMinor
         }
-      />
+      /> */}
       <div>
         {bannerFile.name}{' '}
         <Text variant="bodySm" as="p">
