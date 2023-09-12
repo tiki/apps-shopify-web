@@ -111,68 +111,68 @@ export function DiscountOrderCreate() {
       };
 
 
-      // preciso do shopify url e do token 
-      // let stagedUploadsQueryResult = await fetch(`${your_shopify_admin_url}/graphql.json`, 
-      // {
-      //   method: 'post',
-      //   headers: {
-      //     "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
-      //   },
-      //   body: JSON.stringify({
-      //     query: stagedUploadsQuery,
-      //     variables: stagedUploadsVariables,
-      //   })
-      // })
+      let stagedUploadsQueryResult = await fetch(`${your_shopify_admin_url}/graphql.json`, 
+      {
+        method: 'post',
+        headers: {
+          "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
+        },
+        body: JSON.stringify({
+          query: stagedUploadsQuery,
+          variables: stagedUploadsVariables,
+        })
+      })
     
-      // const target = stagedUploadsQueryResult.data.data.stagedUploadsCreate.stagedTargets[0];
-      // const params = target.parameters; 
-      // const url = target.url; 
-      // const resourceUrl = target.resourceUrl;
+      const target = stagedUploadsQueryResult.data.data.stagedUploadsCreate.stagedTargets[0];
+      const params = target.parameters; 
+      const url = target.url; 
+      const resourceUrl = target.resourceUrl;
 
-      // const form = new FormData();
-      // params.forEach(({ name, value }) => {
-      //   form.append(name, value);
-      // });
-      // form.append("file", bannerFile![0]);
+      const form = new FormData();
+      params.forEach(({ name, value }) => {
+        form.append(name, value);
+      });
+      form.append("file", bannerFile![0]);
 
-      // await fetch(url, {
-      //   body: form,
-      //   headers: {
-      //     "Content-type": "multipart/form-data",
-      //     "Content-Length": bannerFile![0].bannerFile.size,  
-      //   },
-      // })
+      await fetch(url, {
+        body: form,
+        headers: {
+          "Content-type": "multipart/form-data",
+          "Content-Length": bannerFile![0].bannerFile.size,  
+        },
+      })
 
-      // const createFileQuery = mutation({
-      //   operation: 'fileCreate',
-      //   variables: {
-      //     alt: ''
-      //   },
-      //   fields: [
-      //     {
-      //       userErrors: ['message', 'field'],
-      //     },
-      //   ],
-      // })
+      const createFileQuery = mutation({
+        operation: 'fileCreate',
+        variables: {
+          alt: ''
+        },
+        fields: [
+          {
+            userErrors: ['message', 'field'],
+            files: ['createdAt', 'fileStatus']
+          },
+        ],
+      })
 
-      // const createFileVariables = {
-      //   files: {
-      //     alt: "alt-tag",
-      //     contentType: "IMAGE",
-      //     originalSource: resourceUrl, 
-      //   },
-      // };
+      const createFileVariables = {
+        files: {
+          alt: "alt-tag",
+          contentType: "IMAGE",
+          originalSource: resourceUrl, 
+        },
+      };
 
-      // const createFileQueryResult = await fetch( `${your_shopify_admin_url}/graphql.json`, {
-      //   method: 'post',
-      //   body: JSON.stringify({
-      //     query: createFileQuery,
-      //     variables: createFileVariables,
-      //   }),
-      //   headers: {
-      //     "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
-      //   },
-      // })
+      const createFileQueryResult = await fetch( `${your_shopify_admin_url}/graphql.json`, {
+        method: 'post',
+        body: JSON.stringify({
+          query: createFileQuery,
+          variables: createFileVariables,
+        }),
+        headers: {
+          "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
+        },
+      })
 
 
   }
