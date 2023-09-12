@@ -20,7 +20,7 @@ import {
   DiscountSummary,
   BannerImageDescription,
 } from '../../../components';
-import { query, mutation } from 'gql-query-builder';
+import { mutation } from 'gql-query-builder';
 
 
 
@@ -80,28 +80,61 @@ export function DiscountOrderCreate() {
       }
   };
 
-  // necessário transformar isso em query documents de fato
-    const stagedUploadsQuery = `mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
-      stagedUploadsCreate(input: $input) {
-        stagedTargets {
-          resourceUrl
-          url
-          parameters {
-            name
-            value
-          }
-        }
-        userErrors {
-          field
-          message
-        }
-      }
-    }
-  `;;
+    const handleBannerFile = async () => {  
+      const stagedUploadsQuery = mutation({
+        operation: 'stagedUploadsCreate',
+        variables: {
+          stagedTargets: {
+            resourceUrl: '',
+            url: '',
+            parameters: {
+              name: '',
+              value: ''
+            }
 
+          }
+        },
+        fields: [
+          {
+            userErrors: ['message', 'field'],
+          },
+        ],
+      })
+
+      const stagedUploadsVariables = {
+        input: {
+          filename: bannerFile!.name,
+          httpMethod: "POST",
+          mimeType: bannerFile!.type,
+          resource: "FILE",
+        },
+      };
+
+      let stagedUploadsQueryResult = fetch(`${your_shopify_admin_url}/graphql.json`, 
+      {
+        method: 'post',
+        headers: {
+          "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
+        },
+        body: JSON.stringify({
+          query: stagedUploadsQuery,
+          variables: stagedUploadsVariables,
+        })
+      })
+
+      
+      const target = stagedUploadsQueryResult.data.data.stagedUploadsCreate.stagedTargets[0];
+      const params = target.parameters; 
+      const url = target.url; 
+      const resourceUrl = target.resourceUrl;
+
+  }
 
  
   const submit = async () => {
+    if(bannerFile){
+      handleBannerFile()
+    }
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
