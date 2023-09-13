@@ -21,6 +21,8 @@ import {
   BannerImageDescription,
 } from '../../../components';
 import { mutation } from 'gql-query-builder';
+import { StagedUploadResponse, FIleQueryResponse } from '../../../shopify-mutations-types';
+
 
 
 
@@ -80,80 +82,82 @@ export function DiscountOrderCreate() {
       }
   };
 
-    const handleBannerFile = async () => {  
-      const stagedUploadsQuery = mutation({
-        operation: 'stagedUploadsCreate',
-        variables: {
-          stagedTargets: {
-            resourceUrl: '',
-            url: '',
-            parameters: {
-              name: '',
-              value: ''
-            }
+  const handleBannerFile = async () => {  
+    const stagedUploadsQuery = mutation({
+      operation: 'stagedUploadsCreate',
+      variables: {
+        input: { type: "[StagedUploadInput!]!", name: "input"
+        }
+      },
+       fields: [
+         {
+           userErrors: ['message', 'field'],
+           stagedTargets: ['url', 
+           'resourceUrl', {
+            parameters: ['name','value']
+          }]
+         },
+       
+       ],
+    })
 
-          }
-        },
-        fields: [
-          {
-            userErrors: ['message', 'field'],
-          },
-        ],
-      })
+       const stagedUploadsVariables = {
+         input: {
+           filename: bannerFile!.name,
+           httpMethod: "POST",
+           mimeType: bannerFile!.type,
+           resource: "FILE",
+         },
+       };
 
-      const stagedUploadsVariables = {
-        input: {
-          filename: bannerFile!.name,
-          httpMethod: "POST",
-          mimeType: bannerFile!.type,
-          resource: "FILE",
-        },
-      };
-
-
-      let stagedUploadsQueryResult = await fetch(`${your_shopify_admin_url}/graphql.json`, 
-      {
-        method: 'post',
-        headers: {
-          "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
-        },
-        body: JSON.stringify({
-          query: stagedUploadsQuery,
-          variables: stagedUploadsVariables,
-        })
-      })
+       const shop_url = app.hostOrigin
+       const shop_token = app.featuresAvailable
+       console.log('shop_url:', shop_url)
+       let stagedUploadsQueryResult = await authenticatedFetch(`${shop_url}/admin/api/2023-07/graphql.json`, 
+       {
+         method: 'post',
+         body: JSON.stringify({
+           query: stagedUploadsQuery,
+           variables: stagedUploadsVariables,
+         })
+       })
     
-      const target = stagedUploadsQueryResult.data.data.stagedUploadsCreate.stagedTargets[0];
-      const params = target.parameters; 
-      const url = target.url; 
-      const resourceUrl = target.resourceUrl;
+       const target: StagedUploadResponse = await stagedUploadsQueryResult.json()
+       
+       const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"]; 
+       const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"]; 
+       const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
 
-      const form = new FormData();
-      params.forEach(({ name, value }) => {
-        form.append(name, value);
-      });
-      form.append("file", bannerFile![0]);
+       const form = new FormData();
+       params.forEach(({ name, value }) => {
+         form.append(name, value);
+       });
+       form.append("file", bannerFile!);
 
-      await fetch(url, {
-        body: form,
-        headers: {
-          "Content-type": "multipart/form-data",
-          "Content-Length": bannerFile![0].bannerFile.size,  
-        },
-      })
+       await fetch(url, {
+         body: form,
+         headers: {
+           "Content-type": "multipart/form-data",
+           "Content-Length": String(bannerFile!.size),  
+         },
+       })
 
-      const createFileQuery = mutation({
-        operation: 'fileCreate',
-        variables: {
-          alt: ''
-        },
-        fields: [
-          {
-            userErrors: ['message', 'field'],
-            files: ['createdAt', 'fileStatus']
-          },
-        ],
-      })
+  const createFileQuery = mutation({
+    operation: 'fileCreate',
+    variables: {
+     files: {type: "[FileCreateInput!]!", name: "files"}
+    },
+    fields: [
+      {
+        userErrors: ['message', 'field'],
+        files: ['createdAt', 'fileStatus', {
+         operation: 'MediaImage',
+         fields: ['id'],
+         fragment: true,
+       }]
+      },
+    ],
+  })
 
       const createFileVariables = {
         files: {
@@ -163,25 +167,24 @@ export function DiscountOrderCreate() {
         },
       };
 
-      const createFileQueryResult = await fetch( `${your_shopify_admin_url}/graphql.json`, {
+      const createFileQueryResult = await authenticatedFetch( `${shop_url}/admin/api/2023-07/graphql.json`, {
         method: 'post',
         body: JSON.stringify({
           query: createFileQuery,
           variables: createFileVariables,
         }),
-        headers: {
-          "X-Shopify-Access-Token": `${your_shopify_admin_token}`,
-        },
       })
-
-
+      
+      const result: FIleQueryResponse = await createFileQueryResult.json()
+      const imageId = result.data.fileCreate.files[0]["id"]
+      console.log(imageId)
+      return imageId
   }
 
  
   const submit = async () => {
-    if(bannerFile){
-      handleBannerFile()
-    }
+    const imageId = await handleBannerFile()
+    
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
@@ -202,6 +205,7 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
+      discountImage: imageId
     };
     await authenticatedFetch(
       'https://intg-shpfy.pages.dev/api/latest/discount',
