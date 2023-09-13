@@ -77,13 +77,14 @@ export function DiscountOrderCreate() {
         setOfferDescription(event.offerDescription)
       }
       if(event.bannerFile){
-        console.log(typeof event.bannerFile, event.bannerFile)
+        console.log(typeof event.bannerFile, event.bannerFile[0])
         setBannerFile(event.bannerFile[0])
         console.log('teste:', bannerFile)
       }
   };
 
   const handleBannerFile = async () => {  
+    console.log('teste function', title, bannerFile)
     const stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
@@ -112,7 +113,6 @@ export function DiscountOrderCreate() {
        };
 
        const shop_url = app.hostOrigin
-       const shop_token = app.featuresAvailable
        console.log('shop_url:', shop_url)
        let stagedUploadsQueryResult = await authenticatedFetch(`${shop_url}/admin/api/2023-07/graphql.json`, 
        {
