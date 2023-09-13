@@ -124,7 +124,7 @@ export function DiscountOrderCreate() {
        })
     
        const target: StagedUploadResponse = await stagedUploadsQueryResult.json()
-       
+       console.log('target', target)
        const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"]; 
        const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"]; 
        const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
@@ -142,7 +142,7 @@ export function DiscountOrderCreate() {
            "Content-Length": String(bannerFile!.size),  
          },
        })
-
+       console.log("form to AWS ok")
   const createFileQuery = mutation({
     operation: 'fileCreate',
     variables: {
@@ -159,7 +159,6 @@ export function DiscountOrderCreate() {
       },
     ],
   })
-
       const createFileVariables = {
         files: {
           alt: "alt-tag",
