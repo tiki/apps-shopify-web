@@ -78,7 +78,7 @@ export function DiscountOrderCreate() {
       }
       if(event.bannerFile){
         console.log(typeof event.bannerFile, event.bannerFile)
-        setBannerFile(event.bannerFile)
+        setBannerFile(event.bannerFile[0])
         console.log('teste:', bannerFile)
       }
   };
