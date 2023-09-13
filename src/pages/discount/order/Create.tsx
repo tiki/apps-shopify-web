@@ -77,6 +77,7 @@ export function DiscountOrderCreate() {
         setOfferDescription(event.offerDescription)
       }
       if(event.bannerFile){
+        console.log(typeof event.bannerFile, event.bannerFile)
         setBannerFile(event.bannerFile)
         console.log('teste:', bannerFile)
       }

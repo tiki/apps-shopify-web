@@ -40,7 +40,7 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
     <>
         <DropZone allowMultiple={false} onDrop={(event)=>{
           handleDropZoneDrop
-          onChange({bannerFile: event[0]})
+          onChange({bannerFile: bannerFile!})
         }}
         label="Banner Discount Image"
         >
