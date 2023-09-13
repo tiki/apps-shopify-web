@@ -41,6 +41,10 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
         <DropZone allowMultiple={false} onDrop={
           handleDropZoneDrop
         }
+        onDropAccepted={(file)=>{
+          console.log('teste componente', file)
+          onChange({bannerFile: file})
+        }}
         label="Banner Discount Image"
         >
         {uploadedFile}
