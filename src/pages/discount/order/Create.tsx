@@ -52,7 +52,6 @@ export function DiscountOrderCreate() {
   const [offerDescription, setOfferDescription] = useState('');
 
   const handleChange = (event: any) => {
-    console.log('teste', event)
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -74,11 +73,11 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: event.shippingDiscounts,
       });
-      if(event.bannerDescription){
+      if(event.offerDescription){
         setOfferDescription(event.offerDescription)
       }
       if(event.bannerFile){
-        setBannerFile(event.bannerFile[0])
+        setBannerFile(event.bannerFile)
       }
   };
 
