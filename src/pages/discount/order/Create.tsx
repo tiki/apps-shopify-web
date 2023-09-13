@@ -79,8 +79,7 @@ export function DiscountOrderCreate() {
       if(event.bannerFile){
         console.log(typeof event.bannerFile, event.bannerFile[0])
         setBannerFile(event.bannerFile[0])
-        console.log('teste:', bannerFile)
-      }
+        }
   };
 
   const handleBannerFile = async () => {  
@@ -112,8 +111,9 @@ export function DiscountOrderCreate() {
          },
        };
 
-       const shop_url = app.hostOrigin
-       console.log('shop_url:', shop_url)
+       const shop_url = "https://tiki-test-store.myshopify.com"
+       //const shop_url = app.hostOrigin
+       //console.log('shop_url:', shop_url)
        let stagedUploadsQueryResult = await authenticatedFetch(`${shop_url}/admin/api/2023-07/graphql.json`, 
        {
          method: 'post',
