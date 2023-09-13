@@ -10,7 +10,7 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
   
   const handleDropZoneDrop = useCallback(
     (_dropFiles: File[], bannerFile: File[], _rejectedFiles: File[]) =>
-    setBannerFile(bannerFile![0]),
+    setBannerFile(bannerFile[0]),
     [],
   );
 
@@ -40,7 +40,7 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
     <>
         <DropZone allowMultiple={false} onDrop={(event)=>{
           handleDropZoneDrop
-          onChange({bannerFile: bannerFile!})
+          onChange({bannerFile: event})
         }}
         label="Banner Discount Image"
         >
