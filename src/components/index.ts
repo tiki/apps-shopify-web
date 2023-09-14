@@ -13,4 +13,3 @@ export * from './MaxUsage';
 export * from './MinReqsCard';
 export * from './TitleAndDescription';
 export * from './providers';
-export * from './BannerImageDescription';

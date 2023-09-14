@@ -18,14 +18,7 @@ import {
   TitleAndDescription,
   MaxUsageCheckbox,
   DiscountSummary,
-  BannerImageDescription,
 } from '../../../components';
-import { mutation } from 'gql-query-builder';
-import { StagedUploadResponse, FIleQueryResponse } from '../../../shopify-mutations-types';
-
-
-
-
 
 export function DiscountOrderCreate() {
   const app = useAppBridge();
@@ -48,9 +41,6 @@ export function DiscountOrderCreate() {
     productDiscounts: false,
     shippingDiscounts: false,
   });
-  const [bannerFile, setBannerFile] = useState<File>();
-  const [offerDescription, setOfferDescription] = useState('');
-
   const handleChange = (event: any) => {
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
@@ -73,118 +63,9 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: event.shippingDiscounts,
       });
-      if(event.offerDescription){
-        setOfferDescription(event.offerDescription)
-      }
-      if(event.bannerFile){
-        console.log(typeof event.bannerFile, event.bannerFile[0])
-        setBannerFile(event.bannerFile[0])
-        }
   };
 
-  const handleBannerFile = async () => {  
-    console.log('teste function', title, bannerFile)
-    const stagedUploadsQuery = mutation({
-      operation: 'stagedUploadsCreate',
-      variables: {
-        input: { type: "[StagedUploadInput!]!", name: "input"
-        }
-      },
-       fields: [
-         {
-           userErrors: ['message', 'field'],
-           stagedTargets: ['url', 
-           'resourceUrl', {
-            parameters: ['name','value']
-          }]
-         },
-       
-       ],
-    })
-
-       const stagedUploadsVariables = {
-         input: {
-           filename: bannerFile!.name,
-           httpMethod: "POST",
-           mimeType: bannerFile!.type,
-           resource: "FILE",
-         },
-       };
-
-       const shop_url = "https://tiki-test-store.myshopify.com"
-       //const shop_url = app.hostOrigin
-       //console.log('shop_url:', shop_url)
-       let stagedUploadsQueryResult = await authenticatedFetch(`${shop_url}/admin/api/2023-07/graphql.json`, 
-       {
-         method: 'post',
-         body: JSON.stringify({
-           query: stagedUploadsQuery,
-           variables: stagedUploadsVariables,
-         })
-       })
-    
-       const target: StagedUploadResponse = await stagedUploadsQueryResult.json()
-       console.log('target', target)
-       const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"]; 
-       const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"]; 
-       const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
-
-       const form = new FormData();
-       params.forEach(({ name, value }) => {
-         form.append(name, value);
-       });
-       form.append("file", bannerFile!);
-
-       await fetch(url, {
-         body: form,
-         headers: {
-           "Content-type": "multipart/form-data",
-           "Content-Length": String(bannerFile!.size),  
-         },
-       })
-       console.log("form to AWS ok")
-  const createFileQuery = mutation({
-    operation: 'fileCreate',
-    variables: {
-     files: {type: "[FileCreateInput!]!", name: "files"}
-    },
-    fields: [
-      {
-        userErrors: ['message', 'field'],
-        files: ['createdAt', 'fileStatus', {
-         operation: 'MediaImage',
-         fields: ['id'],
-         fragment: true,
-       }]
-      },
-    ],
-  })
-      const createFileVariables = {
-        files: {
-          alt: "alt-tag",
-          contentType: "IMAGE",
-          originalSource: resourceUrl, 
-        },
-      };
-
-      const createFileQueryResult = await authenticatedFetch( `${shop_url}/admin/api/2023-07/graphql.json`, {
-        method: 'post',
-        body: JSON.stringify({
-          query: createFileQuery,
-          variables: createFileVariables,
-        }),
-      })
-      
-      const result: FIleQueryResponse = await createFileQueryResult.json()
-      const imageId = result.data.fileCreate.files[0]["id"]
-      console.log(imageId)
-      return imageId
-  }
-
- 
   const submit = async () => {
-    const imageId = await handleBannerFile()
-    
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
@@ -205,7 +86,6 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImage: imageId
     };
     await authenticatedFetch(
       'https://intg-shpfy.pages.dev/api/latest/discount',
@@ -258,9 +138,6 @@ export function DiscountOrderCreate() {
             }}
             startsAt={new Date().toUTCString()}
             endsAt={new Date().toUTCString()}
-          />
-          <BannerImageDescription 
-          onChange={handleChange}
           />
         </Layout.Section>
         <Layout.Section secondary>

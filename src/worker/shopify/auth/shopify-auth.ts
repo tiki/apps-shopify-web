@@ -13,7 +13,7 @@ export class ShopifyAuth {
   static readonly tokenHeader = 'X-Shopify-Access-Token';
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
   static readonly scope =
-    'read_orders,write_discounts,read_customers,write_customers, write_files, write_themes';
+    'read_orders,write_discounts,read_customers,write_customers';
 
   private _accessToken: string | null = null;
   private readonly _keyId: string;

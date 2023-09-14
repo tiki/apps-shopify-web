@@ -18,14 +18,11 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
-  BannerImageDescription
 } from '../../../components';
 import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
-import { useMutation } from 'react-query';
-
 
 export function DiscountProductCreate() {
   const app = useAppBridge();
@@ -69,8 +66,6 @@ export function DiscountProductCreate() {
     productDiscounts: false,
     shippingDiscounts: false,
   });
-  const [bannerFile, setBannerFile] = useState<File>();
-  const [offerDescription, setOfferDescription] = useState('');
   const handleChange = (event: any) => {
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
@@ -96,12 +91,6 @@ export function DiscountProductCreate() {
         productDiscounts: event.productDiscounts,
         shippingDiscounts: event.shippingDiscounts,
       });
-      if(event.bannerDescription){
-        setOfferDescription(event.offerDescription)
-      }
-      if(event.bannerFile){
-        setBannerFile(event.bannerFile[0])
-      }
   };
 
   const submit = async () => {
@@ -201,9 +190,6 @@ export function DiscountProductCreate() {
               }}
               startsAt={new Date().toUTCString()}
               endsAt={new Date().toUTCString()}
-            />
-            <BannerImageDescription 
-                onChange={handleChange}
             />
           </form>
         </Layout.Section>

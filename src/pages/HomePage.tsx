@@ -27,7 +27,6 @@ export function HomePage() {
               <LegacyStack.Item fill>
                 <TextContainer spacing="loose">
                   <h1>Welcome to the TIKI app 🎉</h1>
-                  <h1>Testar esse carai</h1>
                   <p>
                     Lorem ipsum dolor sit amet{' '}
                     <Link url="https://polaris.shopify.com/" external>

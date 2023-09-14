@@ -10,7 +10,6 @@ import {
   PolarisProvider,
   DiscountProvider,
 } from './components/providers';
-import { NavigationMenu } from '@shopify/app-bridge-react';
 import { AppRouter } from './components/AppRouter';
 
 export default function App() {
@@ -18,21 +17,6 @@ export default function App() {
     <PolarisProvider>
       <BrowserRouter>
         <AppBridgeProvider>
-        <NavigationMenu
-            navigationLinks={[
-              {
-                label: 'Home',
-                destination: '/',
-              },
-              {
-                label: 'Terms',
-                destination: '/terms',
-              },
-            ]}
-            matcher={(link, location) =>
-              link.destination === location.toString()
-            }
-          />
           <DiscountProvider>
             <QueryProvider>
               <AppRouter />
