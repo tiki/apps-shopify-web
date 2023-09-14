@@ -120,6 +120,10 @@ export function DiscountOrderCreate() {
             <LegacyCard.Section title="Usage limit">
               {<MaxUsageCheckbox onChange={handleChange} />}
             </LegacyCard.Section>
+            <LegacyCard.Section title="Combinations">
+              <CombinationsCard discountClassProp="ORDER" onChange={handleChange} />
+            </LegacyCard.Section>
+
           </LegacyCard>
           <MinReqsCard
             appliesTo={AppliesTo.Order}
@@ -128,8 +132,6 @@ export function DiscountOrderCreate() {
             qty={minQty}
             onChange={handleChange}
           />
-
-          <CombinationsCard discountClassProp="ORDER" onChange={handleChange} />
           <ActiveDatesCard
             onChange={(start: string, end: string) => {
               setStartsAt(new Date(start));

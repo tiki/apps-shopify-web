@@ -172,16 +172,18 @@ export function DiscountProductCreate() {
                   }}
                 />
               </LegacyCard.Section>
+              <LegacyCard.Section title="Combinations">
+                <CombinationsCard
+                discountClassProp="PRODUCT"
+                onChange={handleChange}
+              />
+              </LegacyCard.Section>
             </LegacyCard>
             <MinReqsCard
               appliesTo={AppliesTo.Products}
               type={RequirementType.None}
               subTotal={minValue}
               qty={minQty}
-              onChange={handleChange}
-            />
-            <CombinationsCard
-              discountClassProp="PRODUCT"
               onChange={handleChange}
             />
             <ActiveDatesCard
