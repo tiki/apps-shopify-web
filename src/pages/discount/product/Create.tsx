@@ -67,6 +67,7 @@ export function DiscountProductCreate() {
     shippingDiscounts: false,
   });
   const handleChange = (event: any) => {
+    console.log(event)
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')

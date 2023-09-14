@@ -22,6 +22,10 @@ export const CombinationsCard = ({
   discountClass = DiscountClass,
   discountClassProp = '',
 }) => {
+  const [checkedShippingOrder, setCheckedShippingOrder] = useState(false);
+  const [checkedShippingProduct, setCheckedShippingProduct] = useState(false);
+  const [checkedProduct, setCheckedProduct] = useState(false);
+
   const [combinesWith, setCombinesWith] = useState({
     orderDiscounts: false,
     productDiscounts: false,
@@ -37,18 +41,21 @@ export const CombinationsCard = ({
           ...prevProps,
           shippingDiscounts: value
         }))
+        setCheckedShippingOrder(value)
       }
       if(id === "shipping_product"){
         setCombinesWith((prevProps)=>({
           ...prevProps,
           shippingDiscounts: value
         }))
+        setCheckedShippingProduct(value)
       }
       if(id === "product"){
         setCombinesWith((prevProps)=>({
           ...prevProps,
           productDiscounts: value
         }))
+        setCheckedProduct(value)
       }
     },
     [combinesWith],
@@ -60,6 +67,7 @@ export const CombinationsCard = ({
          onChange={onChangeCallback}
          label="Shipping Discount"
          id='shipping_order'
+         checked={checkedShippingOrder}
        />
      </>
   ) :   <>
@@ -68,12 +76,14 @@ export const CombinationsCard = ({
          onChange={onChangeCallback}
          label="Shipping Discount"
          id='shipping_product'
+         checked={checkedShippingProduct}
        />
         <Checkbox
          value="Product Discount"
          onChange={onChangeCallback}
          label="Product Discounts"
          id='product'
+         checked={checkedProduct}
        />
      </>  )
 
