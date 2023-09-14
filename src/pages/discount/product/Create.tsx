@@ -9,6 +9,7 @@ import { AppliesTo, RequirementType } from '@shopify/discount-app-components';
 import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris';
 
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
+import { get } from '../../../worker/api/discount/discount-routes';
 
 import {
   MinReqsCard,
@@ -116,7 +117,7 @@ export function DiscountProductCreate() {
       },
     };
     await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
+      'https://tiki-web.pages.dev/api/latest/discount',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
