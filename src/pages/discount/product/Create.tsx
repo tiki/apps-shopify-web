@@ -67,7 +67,7 @@ export function DiscountProductCreate() {
     shippingDiscounts: false,
   });
   const handleChange = (event: any) => {
-    console.log(event)
+    console.log(event);
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -116,14 +116,11 @@ export function DiscountProductCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
-    await authenticatedFetch(
-      'https://tiki-web.pages.dev/api/latest/discount',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      },
-    );
+    await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
     });
@@ -183,7 +180,7 @@ export function DiscountProductCreate() {
             <CombinationsCard
               discountClassProp="PRODUCT"
               onChange={handleChange}
-            /> 
+            />
             <ActiveDatesCard
               onChange={(start: string, end: string) => {
                 setStartsAt(new Date(start));
