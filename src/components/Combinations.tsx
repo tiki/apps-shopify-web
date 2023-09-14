@@ -53,7 +53,7 @@ export const CombinationsCard = ({
     },
     [combinesWith],
   );
-  if(discountClassProp === "ORDER") return (
+  if(discountClassProp === "ORDER") {return (
     <>
         <Checkbox
         value="Shipping Discount"
@@ -62,7 +62,7 @@ export const CombinationsCard = ({
         id='shipping_order'
       />
     </>
-  )
+  )}
   else return (
     <>
         <Checkbox
