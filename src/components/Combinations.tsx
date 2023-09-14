@@ -53,32 +53,57 @@ export const CombinationsCard = ({
     },
     [combinesWith],
   );
-  if(discountClassProp === "ORDER") {return (
+  return (  discountClassProp === "ORDER" ?  (
     <>
+         <Checkbox
+         value="Shipping Discount"
+         onChange={onChangeCallback}
+         label="Shipping Discount"
+         id='shipping_order'
+       />
+     </>
+  ) :   <>
+         <Checkbox
+         value="Shipping Discount"
+         onChange={onChangeCallback}
+         label="Shipping Discount"
+         id='shipping_product'
+       />
         <Checkbox
-        value="Shipping Discount"
-        onChange={onChangeCallback}
-        label="Shipping Discount"
-        id='shipping_order'
-      />
-    </>
-  )}
-  else return (
-    <>
-        <Checkbox
-        value="Shipping Discount"
-        onChange={onChangeCallback}
-        label="Shipping Discount"
-        id='shipping_product'
-      />
-       <Checkbox
-        value="Product Discount"
-        onChange={onChangeCallback}
-        label="Product Discounts"
-        id='product'
-      />
-    </>  
-  )
+         value="Product Discount"
+         onChange={onChangeCallback}
+         label="Product Discounts"
+         id='product'
+       />
+     </>  )
+
+
+  // if(discountClassProp === "ORDER") return (
+  //   <>
+  //       <Checkbox
+  //       value="Shipping Discount"
+  //       onChange={onChangeCallback}
+  //       label="Shipping Discount"
+  //       id='shipping_order'
+  //     />
+  //   </>
+  // )
+  // else return (
+  //   <>
+  //       <Checkbox
+  //       value="Shipping Discount"
+  //       onChange={onChangeCallback}
+  //       label="Shipping Discount"
+  //       id='shipping_product'
+  //     />
+  //      <Checkbox
+  //       value="Product Discount"
+  //       onChange={onChangeCallback}
+  //       label="Product Discounts"
+  //       id='product'
+  //     />
+  //   </>  
+  // )
   //return (
     // <CombinationCard
     //   combinableDiscountTypes={{
