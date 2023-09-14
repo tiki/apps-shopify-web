@@ -59,7 +59,6 @@ export const CombinationsCard = ({
         value="Shipping Discount"
         onChange={onChangeCallback}
         label="Shipping Discount"
-        checked="combinesWith.shippingDiscounts"
         id='shipping_order'
       />
     </>
@@ -70,14 +69,12 @@ export const CombinationsCard = ({
         value="Shipping Discount"
         onChange={onChangeCallback}
         label="Shipping Discount"
-        checked="combinesWith.shippingDiscounts"
         id='shipping_product'
       />
        <Checkbox
         value="Product Discount"
         onChange={onChangeCallback}
         label="Product Discounts"
-        checked="combinesWith.shippingDiscounts"
         id='product'
       />
     </>  
