@@ -67,7 +67,7 @@ export function DiscountSummary({
         </LegacyCard.Section>
         <LegacyCard.Section title="Active dates">
           <p>Starts at: {startsAt ? `${startsAt?.toLocaleString()}` : ''}</p>
-          {endsAt ? `${endsAt?.toLocaleString()}` : ''}
+          <p>Ends at: {endsAt ? `${endsAt?.toLocaleString()}` : ''}</p>
         </LegacyCard.Section>
       </LegacyCard>
     </>

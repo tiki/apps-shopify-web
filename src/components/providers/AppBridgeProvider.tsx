@@ -25,7 +25,7 @@ export function AppBridgeProvider(props: { children: React.ReactNode }) {
     [history, location],
   );
 
-  const apiKey = '33d82ccecd1a316a4cbdb7d090735fa8'; // process.env.SHOPIFY_API_KEY
+  const apiKey = '1949a2edb1cab0db98cdf67e81742982'; // process.env.SHOPIFY_API_KEY
 
   const [appBridgeConfig] = useState(() => {
     const host = new URLSearchParams(location.search).get('host');
