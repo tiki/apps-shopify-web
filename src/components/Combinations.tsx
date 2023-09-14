@@ -32,9 +32,24 @@ export const CombinationsCard = ({
     (value: boolean, id:string) => {
       console.log('teste', value, id)
       onChange(value);
-      // setCombinesWith({
-      //   [id]: value
-      // });
+      if(id === "shipping_order"){
+        setCombinesWith((prevProps)=>({
+          ...prevProps,
+          shippingDiscounts: value
+        }))
+      }
+      if(id === "shipping_product"){
+        setCombinesWith((prevProps)=>({
+          ...prevProps,
+          shippingDiscounts: value
+        }))
+      }
+      if(id === "product"){
+        setCombinesWith((prevProps)=>({
+          ...prevProps,
+          productDiscounts: value
+        }))
+      }
     },
     [combinesWith],
   );
@@ -44,9 +59,28 @@ export const CombinationsCard = ({
         value="Shipping Discount"
         onChange={onChangeCallback}
         label="Shipping Discount"
-        id='shipping'
+        checked="combinesWith.shippingDiscounts"
+        id='shipping_order'
       />
     </>
+  )
+  else return (
+    <>
+        <Checkbox
+        value="Shipping Discount"
+        onChange={onChangeCallback}
+        label="Shipping Discount"
+        checked="combinesWith.shippingDiscounts"
+        id='shipping_product'
+      />
+       <Checkbox
+        value="Product Discount"
+        onChange={onChangeCallback}
+        label="Product Discounts"
+        checked="combinesWith.shippingDiscounts"
+        id='product'
+      />
+    </>  
   )
   //return (
     // <CombinationCard
