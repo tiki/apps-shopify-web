@@ -179,10 +179,10 @@ export function DiscountProductCreate() {
               qty={minQty}
               onChange={handleChange}
             />
-            {/* <CombinationsCard
+            <CombinationsCard
               discountClassProp="PRODUCT"
               onChange={handleChange}
-            /> */}
+            /> 
             <ActiveDatesCard
               onChange={(start: string, end: string) => {
                 setStartsAt(new Date(start));
