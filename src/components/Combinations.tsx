@@ -29,10 +29,12 @@ export const CombinationsCard = ({
   });
 
   const onChangeCallback = useCallback(
-    (value: Combinations) => {
-      console.log('teste', value)
+    (value: boolean, id:string) => {
+      console.log('teste', value, id)
       onChange(value);
-      setCombinesWith(value);
+      // setCombinesWith({
+      //   [id]: value
+      // });
     },
     [combinesWith],
   );
@@ -40,7 +42,7 @@ export const CombinationsCard = ({
     <Checkbox
     value="Shipping Discount"
     onChange={onChangeCallback}
-    label="Limit to one use per customer"
+    label="Shipping Discount"
   />
   )
   //return (
