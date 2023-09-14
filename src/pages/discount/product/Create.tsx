@@ -84,14 +84,17 @@ export function DiscountProductCreate() {
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
     if (
-      event.shippingDiscounts !== undefined &&
-      event.productDiscounts !== undefined
+      event.shippingDiscounts !== undefined 
     )
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: event.productDiscounts,
+      setCombines((prevProps)=>({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
-      });
+      }));
+    if (event.productDiscounts !== undefined)
+      setCombines((prevProps)=>({
+        ...prevProps,
+        productDiscounts: event.productDiscounts,
+      }));
   };
 
   const submit = async () => {

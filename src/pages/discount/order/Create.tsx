@@ -58,11 +58,10 @@ export function DiscountOrderCreate() {
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
     if (event.shippingDiscounts !== undefined)
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: false,
+      setCombines((prevProps)=>({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
-      });
+      }));
   };
 
   const submit = async () => {
