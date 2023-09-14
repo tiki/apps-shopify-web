@@ -33,7 +33,6 @@ export const CombinationsCard = ({
 
   const onChangeCallback = useCallback(
     (value: boolean, id: string) => {
-      console.log('teste', value, id);
       onChange(value);
       if (id === 'shipping_order') {
         setCombinesWith((prevProps) => ({
@@ -90,46 +89,4 @@ export const CombinationsCard = ({
       />
     </>
   );
-
-  // if(discountClassProp === "ORDER") return (
-  //   <>
-  //       <Checkbox
-  //       value="Shipping Discount"
-  //       onChange={onChangeCallback}
-  //       label="Shipping Discount"
-  //       id='shipping_order'
-  //     />
-  //   </>
-  // )
-  // else return (
-  //   <>
-  //       <Checkbox
-  //       value="Shipping Discount"
-  //       onChange={onChangeCallback}
-  //       label="Shipping Discount"
-  //       id='shipping_product'
-  //     />
-  //      <Checkbox
-  //       value="Product Discount"
-  //       onChange={onChangeCallback}
-  //       label="Product Discounts"
-  //       id='product'
-  //     />
-  //   </>
-  // )
-  //return (
-  // <CombinationCard
-  //   combinableDiscountTypes={{
-  //     value: combinesWith,
-  //     onChange: onChangeCallback,
-  //   }}
-  //   discountClass={
-  //     discountClassProp === 'ORDER'
-  //       ? discountClass.Order
-  //       : discountClass.Product
-  //   }
-  //   discountDescriptor=""
-  // />
-
-  // );
 };

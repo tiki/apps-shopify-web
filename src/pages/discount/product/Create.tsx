@@ -18,6 +18,7 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
+  MaxUsageCheckbox
 } from '../../../components';
 import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
@@ -172,6 +173,9 @@ export function DiscountProductCreate() {
                   }}
                 />
               </LegacyCard.Section>
+              <LegacyCard.Section title="Usage limit">
+              {<MaxUsageCheckbox onChange={handleChange} />}
+            </LegacyCard.Section>
               <LegacyCard.Section title="Combinations">
                 <CombinationsCard
                 discountClassProp="PRODUCT"
