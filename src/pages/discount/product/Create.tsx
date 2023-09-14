@@ -99,7 +99,7 @@ export function DiscountProductCreate() {
       startsAt: startsAt ?? '',
       endsAt,
       metafields: {
-        type: 'order',
+        type: 'product',
         description: description ?? '',
         discountType: discountType ?? '',
         discountValue: discountValue ?? '',
