@@ -68,7 +68,6 @@ export function DiscountProductCreate() {
     shippingDiscounts: false,
   });
   const handleChange = (event: any) => {
-    console.log(event);
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -120,6 +119,7 @@ export function DiscountProductCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
+    console.log('body:', body)
     await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

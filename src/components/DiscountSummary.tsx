@@ -57,10 +57,12 @@ export function DiscountSummary({
       </LegacyCard>
       <LegacyCard>
         <LegacyCard.Section title="Combines with">
-          <p>Order Discounts: {combinesWith.orderDiscounts ? 'Yes' : 'No'}</p>
+          { discountType === "product" ?
           <p>
             Product Discounts: {combinesWith.productDiscounts ? 'Yes' : 'No'}
           </p>
+          : ('')
+          }
           <p>
             Shipping Discounts: {combinesWith.shippingDiscounts ? 'Yes' : 'No'}
           </p>
