@@ -8,6 +8,8 @@ import {
   CombinationCard,
   DiscountClass,
 } from '@shopify/discount-app-components';
+import { Checkbox } from '@shopify/polaris';
+
 
 export interface Combinations {
   orderDiscounts: boolean;
@@ -28,24 +30,32 @@ export const CombinationsCard = ({
 
   const onChangeCallback = useCallback(
     (value: Combinations) => {
+      console.log('teste', value)
       onChange(value);
       setCombinesWith(value);
     },
     [combinesWith],
   );
-
-  return (
-    <CombinationCard
-      combinableDiscountTypes={{
-        value: combinesWith,
-        onChange: onChangeCallback,
-      }}
-      discountClass={
-        discountClassProp === 'ORDER'
-          ? discountClass.Order
-          : discountClass.Product
-      }
-      discountDescriptor=""
-    />
-  );
+  if(discountClassProp === "ORDER") return (
+    <Checkbox
+    value="Shipping Discount"
+    onChange={onChangeCallback}
+    label="Limit to one use per customer"
+  />
+  )
+  //return (
+    // <CombinationCard
+    //   combinableDiscountTypes={{
+    //     value: combinesWith,
+    //     onChange: onChangeCallback,
+    //   }}
+    //   discountClass={
+    //     discountClassProp === 'ORDER'
+    //       ? discountClass.Order
+    //       : discountClass.Product
+    //   }
+    //   discountDescriptor=""
+    // />
+    
+ // );
 };

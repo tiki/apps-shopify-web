@@ -9,7 +9,6 @@ import { AppliesTo, RequirementType } from '@shopify/discount-app-components';
 import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris';
 
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
-import { get } from '../../../worker/api/discount/discount-routes';
 
 import {
   MinReqsCard,
@@ -180,10 +179,10 @@ export function DiscountProductCreate() {
               qty={minQty}
               onChange={handleChange}
             />
-            <CombinationsCard
+            {/* <CombinationsCard
               discountClassProp="PRODUCT"
               onChange={handleChange}
-            />
+            /> */}
             <ActiveDatesCard
               onChange={(start: string, end: string) => {
                 setStartsAt(new Date(start));
