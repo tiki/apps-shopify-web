@@ -154,6 +154,7 @@ export function DiscountOrderCreate() {
             combinesWith={combinesWith}
             startsAt={startsAt ?? ''}
             endsAt={endsAt}
+            isProductDiscount={false}
           />
         </Layout.Section>
         <Layout.Section>

@@ -212,6 +212,7 @@ export function DiscountProductCreate() {
             combinesWith={combinesWith ?? ''}
             startsAt={startsAt}
             endsAt={endsAt}
+            isProductDiscount={true}
           />
         </Layout.Section>
         <Layout.Section>

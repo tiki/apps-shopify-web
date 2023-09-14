@@ -17,6 +17,7 @@ interface DiscountSummaryProps {
   combinesWith: DiscountReqCombine;
   startsAt: Date;
   endsAt: Date | undefined;
+  isProductDiscount: boolean;
 }
 
 export function DiscountSummary({
@@ -30,6 +31,7 @@ export function DiscountSummary({
   combinesWith,
   startsAt,
   endsAt,
+  isProductDiscount
 }: DiscountSummaryProps) {
   return (
     <>
@@ -57,7 +59,7 @@ export function DiscountSummary({
       </LegacyCard>
       <LegacyCard>
         <LegacyCard.Section title="Combines with">
-          { discountType === "product" ?
+          { isProductDiscount ?
           <p>
             Product Discounts: {combinesWith.productDiscounts ? 'Yes' : 'No'}
           </p>
