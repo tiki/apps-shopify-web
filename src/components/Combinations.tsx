@@ -39,11 +39,14 @@ export const CombinationsCard = ({
     [combinesWith],
   );
   if(discountClassProp === "ORDER") return (
-    <Checkbox
-    value="Shipping Discount"
-    onChange={onChangeCallback}
-    label="Shipping Discount"
-  />
+    <>
+        <Checkbox
+        value="Shipping Discount"
+        onChange={onChangeCallback}
+        label="Shipping Discount"
+        id='shipping'
+      />
+    </>
   )
   //return (
     // <CombinationCard
