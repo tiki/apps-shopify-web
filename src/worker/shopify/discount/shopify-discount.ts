@@ -234,7 +234,7 @@ export class ShopifyDiscount extends ShopifyMeta {
         {
           operation: 'metafield',
           variables: {
-            key: { value: 'discount-meta', type: 'String', required: true },
+            key: { value: 'discount_meta', type: 'String', required: true },
             namespace: {
               value: ShopifyMeta.namespace,
               type: 'String',
@@ -284,8 +284,8 @@ export class ShopifyDiscount extends ShopifyMeta {
     const discountIdResp: ShopifyData<ShopifyDiscountIdRsp> =
       await response.json();
     if (
-      discountIdResp.data.discountNode.discount &&
-      discountIdResp.data.discountNode.metafield
+      discountIdResp.data.discountNode?.discount &&
+      discountIdResp.data.discountNode?.metafield
     ) {
       const discountMeta: ShopifyDiscountMeta = JSON.parse(
         discountIdResp.data.discountNode.metafield.value,

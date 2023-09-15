@@ -42,8 +42,9 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
 export async function get(
   request: IRequest,
   env: Env,
-  ctx: { id: string },
+  ctx: ExecutionContext,
 ): Promise<Response> {
+
   const token = request.headers.get(API.Consts.AUTHORIZATION);
   if (token == null) {
     throw new API.ErrorBuilder()
@@ -58,7 +59,9 @@ export async function get(
   );
   const shopDomain = (claims.dest as string).replace(/^https?:\/\//, '');
   const shopify = new Shopify(shopDomain, env);
-  const rsp = await shopify.getDiscountById(ctx.id);
+  const slashPos = request.url.lastIndexOf('/');
+  const id = request.url.slice(slashPos + 1);
+  const rsp = await shopify.getDiscountById(id);
   return json(rsp);
 }
 
