@@ -18,7 +18,7 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
     throw new API.ErrorBuilder().message('Invalid signature').error(403);
   }
 
-  console.log(request.json());
+  console.log(JSON.stringify(await request.json()));
 
   // const order: OrderReq = await request.json();
 
