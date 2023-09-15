@@ -14,7 +14,7 @@ export function DiscountOrderDetail() {
   const url = new URL(window.location.href);
   console.log('url', url);
   const slashPos = url.pathname.lastIndexOf('/');
-  const pathname = url.pathname.slice(slashPos);
+  const pathname = url.pathname.slice(slashPos + 1);
   const id = pathname;
   console.log('id:', id);
 
