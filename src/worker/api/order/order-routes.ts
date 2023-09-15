@@ -10,19 +10,19 @@ import { Throw, API } from '@mytiki/worker-utils-ts';
 
 export async function paid(request: IRequest, env: Env): Promise<Response> {
   const shop = request.headers.get('X-Shopify-Shop-Domain');
+  console.log('teste', shop)
   Throw.ifNull(shop, 'X-Shopify-Shop-Domain');
-
   const shopify = new Shopify(shop as string, env);
-  const success = await shopify.verifyWebhook(request);
-  if (!success) {
-    throw new API.ErrorBuilder().message('Invalid signature').error(403);
-  }
+  // const success = await shopify.verifyWebhook(request);
+  // if (!success) {
+  //   throw new API.ErrorBuilder().message('Invalid signature').error(403);
+  // }
 
-  console.log(JSON.stringify(await request.json()));
-
-  // const order: OrderReq = await request.json();
-
-  // await consumeDiscount(shopify, order);
+  
+  const order: OrderReq = await request.json();
+  console.log(order);
+  
+  await consumeDiscount(shopify, order);
 
   return new Response(null, {
     status: 200,
@@ -36,11 +36,15 @@ async function consumeDiscount(shopify: Shopify, order: OrderReq) {
   )
     return;
   
-   const titles = order.discountApplications.map((discount) => discount.title);
-
   const titles = order.discount_applications.map((discount) => discount.title);
   const ids = await shopify.getDiscountIds(titles);
 
+  const cur = await shopify.getCustomerMetafield(order.customer.id, "discount_allowed");
+
+  const allowedList: Array<string> = JSON.parse(
+    cur.data.customer.metafield?.value ?? '[]',
+  );
+  
   const tids: Array<string> = [];
   ids.data.discountNodes.nodes.forEach((discount) => {
     if (discount.metafield?.id != null) {
@@ -48,5 +52,8 @@ async function consumeDiscount(shopify: Shopify, order: OrderReq) {
     }
   });
 
-  await shopify.discountUsed(order.customer.id, tids);
+  const allowedDiscounts = tids.filter(value => allowedList.includes(value));
+
+
+  await shopify.discountUsed(order.customer.id, allowedDiscounts);
 }
