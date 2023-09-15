@@ -18,6 +18,7 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
+  MaxUsageCheckbox
 } from '../../../components';
 import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
@@ -82,14 +83,17 @@ export function DiscountProductCreate() {
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
     if (
-      event.shippingDiscounts !== undefined &&
-      event.productDiscounts !== undefined
+      event.shippingDiscounts !== undefined 
     )
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: event.productDiscounts,
+      setCombines((prevProps)=>({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
-      });
+      }));
+    if (event.productDiscounts !== undefined)
+      setCombines((prevProps)=>({
+        ...prevProps,
+        productDiscounts: event.productDiscounts,
+      }));
   };
 
   const submit = async () => {
@@ -114,14 +118,12 @@ export function DiscountProductCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
-    await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      },
-    );
+    console.log('body:', body)
+    await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
     });
@@ -168,18 +170,23 @@ export function DiscountProductCreate() {
                     }
                     setFields(fields);
                   }}
-                /> 
-              </LegacyCard.Section> */}
+                />
+              </LegacyCard.Section>
+              <LegacyCard.Section title="Usage limit">
+              {<MaxUsageCheckbox onChange={handleChange} />}
+            </LegacyCard.Section>
+              <LegacyCard.Section title="Combinations">
+                <CombinationsCard
+                discountClassProp="PRODUCT"
+                onChange={handleChange}
+              />
+              </LegacyCard.Section>
             </LegacyCard>
             <MinReqsCard
               appliesTo={AppliesTo.Products}
               type={RequirementType.None}
               subTotal={minValue}
               qty={minQty}
-              onChange={handleChange}
-            />
-            <CombinationsCard
-              discountClassProp="PRODUCT"
               onChange={handleChange}
             />
             <ActiveDatesCard
@@ -204,6 +211,7 @@ export function DiscountProductCreate() {
             combinesWith={combinesWith ?? ''}
             startsAt={startsAt}
             endsAt={endsAt}
+            isProductDiscount={true}
           />
         </Layout.Section>
         <Layout.Section>

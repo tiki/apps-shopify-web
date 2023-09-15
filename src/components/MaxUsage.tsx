@@ -7,7 +7,7 @@ import { useCallback, useState } from 'react';
 import { Checkbox } from '@shopify/polaris';
 
 export const MaxUsageCheckbox = ({ onChange = console.log }) => {
-  const [oncePerCustomer, setOncePerCustomer] = useState<boolean>(false);
+  const [oncePerCustomer, setOncePerCustomer] = useState<boolean>(true);
 
   const oncePerCustomerUpdate = useCallback(
     (value: boolean) => {

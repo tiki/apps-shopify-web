@@ -17,6 +17,7 @@ interface DiscountSummaryProps {
   combinesWith: DiscountReqCombine;
   startsAt: Date;
   endsAt: Date | undefined;
+  isProductDiscount: boolean;
 }
 
 export function DiscountSummary({
@@ -30,6 +31,7 @@ export function DiscountSummary({
   combinesWith,
   startsAt,
   endsAt,
+  isProductDiscount
 }: DiscountSummaryProps) {
   return (
     <>
@@ -57,17 +59,19 @@ export function DiscountSummary({
       </LegacyCard>
       <LegacyCard>
         <LegacyCard.Section title="Combines with">
-          <p>Order Discounts: {combinesWith.orderDiscounts ? 'Yes' : 'No'}</p>
+          { isProductDiscount ?
           <p>
             Product Discounts: {combinesWith.productDiscounts ? 'Yes' : 'No'}
           </p>
+          : ('')
+          }
           <p>
             Shipping Discounts: {combinesWith.shippingDiscounts ? 'Yes' : 'No'}
           </p>
         </LegacyCard.Section>
         <LegacyCard.Section title="Active dates">
           <p>Starts at: {startsAt ? `${startsAt?.toLocaleString()}` : ''}</p>
-          {endsAt ? `${endsAt?.toLocaleString()}` : ''}
+          <p>Ends at: {endsAt ? `${endsAt?.toLocaleString()}` : ''}</p>
         </LegacyCard.Section>
       </LegacyCard>
     </>

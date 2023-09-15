@@ -8,6 +8,7 @@ import {
   CombinationCard,
   DiscountClass,
 } from '@shopify/discount-app-components';
+import { Checkbox } from '@shopify/polaris';
 
 export interface Combinations {
   orderDiscounts: boolean;
@@ -20,6 +21,10 @@ export const CombinationsCard = ({
   discountClass = DiscountClass,
   discountClassProp = '',
 }) => {
+  const [checkedShippingOrder, setCheckedShippingOrder] = useState(false);
+  const [checkedShippingProduct, setCheckedShippingProduct] = useState(false);
+  const [checkedProduct, setCheckedProduct] = useState(false);
+
   const [combinesWith, setCombinesWith] = useState({
     orderDiscounts: false,
     productDiscounts: false,
@@ -27,25 +32,61 @@ export const CombinationsCard = ({
   });
 
   const onChangeCallback = useCallback(
-    (value: Combinations) => {
+    (value: boolean, id: string) => {
       onChange(value);
-      setCombinesWith(value);
+      if (id === 'shipping_order') {
+        setCombinesWith((prevProps) => ({
+          ...prevProps,
+          shippingDiscounts: value,
+        }));
+        onChange({ shippingDiscounts: value });
+        setCheckedShippingOrder(value);
+      }
+      if (id === 'shipping_product') {
+        setCombinesWith((prevProps) => ({
+          ...prevProps,
+          shippingDiscounts: value,
+        }));
+        onChange({ shippingDiscounts: value });
+        setCheckedShippingProduct(value);
+      }
+      if (id === 'product') {
+        setCombinesWith((prevProps) => ({
+          ...prevProps,
+          productDiscounts: value,
+        }));
+        onChange({ productDiscounts: value });
+        setCheckedProduct(value);
+      }
     },
     [combinesWith],
   );
-
-  return (
-    <CombinationCard
-      combinableDiscountTypes={{
-        value: combinesWith,
-        onChange: onChangeCallback,
-      }}
-      discountClass={
-        discountClassProp === 'ORDER'
-          ? discountClass.Order
-          : discountClass.Product
-      }
-      discountDescriptor=""
-    />
+  return discountClassProp === 'ORDER' ? (
+    <>
+      <Checkbox
+        value="Shipping Discount"
+        onChange={onChangeCallback}
+        label="Shipping Discount"
+        id="shipping_order"
+        checked={checkedShippingOrder}
+      />
+    </>
+  ) : (
+    <>
+      <Checkbox
+        value="Shipping Discount"
+        onChange={onChangeCallback}
+        label="Shipping Discount"
+        id="shipping_product"
+        checked={checkedShippingProduct}
+      />
+      <Checkbox
+        value="Product Discount"
+        onChange={onChangeCallback}
+        label="Product Discounts"
+        id="product"
+        checked={checkedProduct}
+      />
+    </>
   );
 };
