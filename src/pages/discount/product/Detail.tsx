@@ -42,7 +42,7 @@ export function DiscountProductDetail() {
 
   useEffect(() => {
     authenticatedFetch(
-      ` https://intg-shpfy.pages.dev/api/latest/discount/${id}`,
+      `https://intg-shpfy.pages.dev/api/latest/discount/${id}`,
       { method: 'get' })
     .then(response => response.json())
     .then(data => setDiscount(data))
