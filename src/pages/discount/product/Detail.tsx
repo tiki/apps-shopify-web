@@ -13,8 +13,9 @@ export function DiscountProductDetail() {
   const authenticatedFetch = useAuthenticatedFetch();
   const url = new URL(window.location.href);
   console.log('url', url);
-  const params = url.searchParams;
-  const id = params.get('id') ?? '';
+  const slashPos = url.pathname.lastIndexOf('/');
+  const pathname = url.pathname.slice(slashPos);
+  const id = pathname;
   console.log('id:', id);
   
   let [discount, setDiscount] = useState<DiscountReq>({
