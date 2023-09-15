@@ -4,89 +4,88 @@
  */
 
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
+import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 
 import { Page, Layout, LegacyCard } from '@shopify/polaris';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 export function DiscountProductDetail() {
-  const discount: DiscountReq = {
-    title: 'Test Title',
-    startsAt: new Date('2023-06-20T10:54:12.959Z'),
-    endsAt: new Date('2024-06-20T10:54:12.959Z'),
-    metafields: {
-      type: 'order',
-      description: 'test description',
+  const authenticatedFetch = useAuthenticatedFetch();
+  const url = new URL(window.location.href);
+  console.log('url', url);
+  const slashPos = url.pathname.lastIndexOf('/');
+  const pathname = url.pathname.slice(slashPos + 1);
+  const id = pathname;
+  console.log('id:', id);
+  
+  let [discount, setDiscount] = useState<DiscountReq>()
 
-      discountType: 'amount',
-      discountValue: 10,
-      minValue: 100,
-      minQty: 0,
-      onePerUser: true,
-      products: [],
-      collections: [],
-    },
-    combinesWith: {
-      orderDiscounts: false,
-      productDiscounts: false,
-      shippingDiscounts: false,
-    },
-  };
+  useEffect(() => {
+    authenticatedFetch(
+      `https://intg-shpfy.pages.dev/api/latest/discount/${id}`,
+      { method: 'get' })
+    .then(response => response.json())
+    .then(data => setDiscount(data))
+    .catch(error => console.log(error))
+  },[])
 
-  return (
+  console.log(discount);
+
+  return ( !discount ? <Page></Page> :
     <Page title="Product Discount">
       <Layout>
         <Layout.Section>
           <LegacyCard>
             <LegacyCard.Section title="Title">
-              <p>Title: {discount.title}</p>
-              <p>Description: {discount.metafields.description}</p>
+              <p>Title: {discount.title ?? ""}</p>
+              <p>Description: {discount.metafields.description ?? ""}</p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Value">
-              <p>Discount Type: {discount.metafields.discountType}</p>
+              <p>Discount Type: {discount.metafields.discountType ?? ""}</p>
               <p>
                 Discount Value:{' '}
-                {discount.metafields.discountType === 'amount' ? '$' : ''}{' '}
-                {discount.metafields.discountValue}
-                {discount.metafields.discountType === 'percentage' ? '%' : ''}
+                {discount?.metafields.discountType === 'amount' ? '$' : ''}{' '}
+                {discount.metafields.discountValue ?? ""}
+                {discount?.metafields.discountType === 'percentage' ? '%' : ''}
               </p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Minimum Requirements">
               <p>
-                {discount.metafields.minValue
+                {discount?.metafields.minValue
                   ? `Minimum value:${discount.metafields.minValue}`
                   : ''}
               </p>
               <p>
-                {discount.metafields.minQty
+                {discount?.metafields.minQty
                   ? `Minimum quantity:${discount.metafields.minQty}`
                   : ''}
               </p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Max Usage">
               <p>Once per customer? </p>
-              <p>{discount.metafields.onePerUser ? 'Yes' : 'No'}</p>
+              <p>{discount?.metafields.onePerUser ? 'Yes' : 'No'}</p>
             </LegacyCard.Section>
           </LegacyCard>
           <LegacyCard>
             <LegacyCard.Section title="Combines with">
               <p>
                 Order Discounts:{' '}
-                {discount.combinesWith.orderDiscounts ? 'Yes' : 'No'}
+                {discount?.combinesWith.orderDiscounts ? 'Yes' : 'No'}
               </p>
               <p>
                 Product Discounts:{' '}
-                {discount.combinesWith.productDiscounts ? 'Yes' : 'No'}
+                {discount?.combinesWith.productDiscounts ? 'Yes' : 'No'}
               </p>
               <p>
                 Shipping Discounts:{' '}
-                {discount.combinesWith.shippingDiscounts ? 'Yes' : 'No'}
+                {discount?.combinesWith.shippingDiscounts ? 'Yes' : 'No'}
               </p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Active dates">
-              <p>Starts at: {discount.startsAt.toLocaleTimeString()}</p>
+              <p>Starts at: {new Date(discount.startsAt).toLocaleTimeString() ?? ""}</p>
               <p>
                 {discount.endsAt
-                  ? `Ends at: ${discount.endsAt.toLocaleDateString()}`
+                  ? `Ends at: ${new Date(discount.endsAt).toLocaleDateString() ?? ""}`
                   : ''}
               </p>
             </LegacyCard.Section>
@@ -95,4 +94,4 @@ export function DiscountProductDetail() {
       </Layout>
     </Page>
   );
-}
+                }

@@ -18,8 +18,9 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
+  MaxUsageCheckbox,
 } from '../../../components';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
@@ -34,7 +35,6 @@ export function DiscountProductCreate() {
     endsAt: undefined,
     metafields: {
       description: '',
-
       type: 'product',
       discountType: 'amount',
       discountValue: 10,
@@ -82,15 +82,16 @@ export function DiscountProductCreate() {
     }
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
-    if (
-      event.shippingDiscounts !== undefined &&
-      event.productDiscounts !== undefined
-    )
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: event.productDiscounts,
+    if (event.shippingDiscounts !== undefined)
+      setCombines((prevProps) => ({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
-      });
+      }));
+    if (event.productDiscounts !== undefined)
+      setCombines((prevProps) => ({
+        ...prevProps,
+        productDiscounts: event.productDiscounts,
+      }));
   };
 
   const submit = async () => {
@@ -99,7 +100,7 @@ export function DiscountProductCreate() {
       startsAt: startsAt ?? '',
       endsAt,
       metafields: {
-        type: 'order',
+        type: 'product',
         description: description ?? '',
         discountType: discountType ?? '',
         discountValue: discountValue ?? '',
@@ -115,14 +116,12 @@ export function DiscountProductCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
-    await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      },
-    );
+    console.log('body:', body);
+    await authenticatedFetch('https://intg-shpfy.pages.dev/api/latest/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }).catch(error => console.log(error));
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
     });
@@ -147,7 +146,7 @@ export function DiscountProductCreate() {
               <LegacyCard.Section title="Value">
                 <DiscountAmount onChange={handleChange} />
               </LegacyCard.Section>
-              <LegacyCard.Section title="Applies To">
+              {/* <LegacyCard.Section title="Applies To">
                 <AppliesToChoices
                   onChange={(
                     list: Resource[],
@@ -170,6 +169,15 @@ export function DiscountProductCreate() {
                     setFields(fields);
                   }}
                 />
+                </LegacyCard.Section> */}
+              <LegacyCard.Section title="Usage limit">
+                {<MaxUsageCheckbox onChange={handleChange} />}
+              </LegacyCard.Section>
+              <LegacyCard.Section title="Combinations">
+                <CombinationsCard
+                  discountClassProp="PRODUCT"
+                  onChange={handleChange}
+                />
               </LegacyCard.Section>
             </LegacyCard>
             <MinReqsCard
@@ -177,10 +185,6 @@ export function DiscountProductCreate() {
               type={RequirementType.None}
               subTotal={minValue}
               qty={minQty}
-              onChange={handleChange}
-            />
-            <CombinationsCard
-              discountClassProp="PRODUCT"
               onChange={handleChange}
             />
             <ActiveDatesCard
@@ -205,6 +209,7 @@ export function DiscountProductCreate() {
             combinesWith={combinesWith ?? ''}
             startsAt={startsAt}
             endsAt={endsAt}
+            isProductDiscount={true}
           />
         </Layout.Section>
         <Layout.Section>

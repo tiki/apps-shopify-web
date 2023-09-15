@@ -132,8 +132,13 @@ export class ShopifyDiscount extends ShopifyMeta {
   }
 
   async setDiscountAllowed(customer: number, id: string): Promise<void> {
+    let previous = new Date().getTime();
+    console.log('setDiscountAllowed', new Date().getTime() - previous);
+    previous = new Date().getTime();
     const key = 'discount_allowed';
     const cur = await this.getCustomerMetafield(customer, key);
+    console.log('getCustomerMetafield', new Date().getTime() - previous);
+    previous = new Date().getTime();
     const allowedList: Array<string> = JSON.parse(
       cur.data.customer.metafield?.value ?? '[]',
     );
@@ -147,6 +152,9 @@ export class ShopifyDiscount extends ShopifyMeta {
         ownerId: `gid://shopify/Customer/${customer}`,
       },
     ]);
+
+    console.log('setMetafields', new Date().getTime() - previous);
+    previous = new Date().getTime();
   }
 
   async getDiscountIds(
@@ -226,7 +234,7 @@ export class ShopifyDiscount extends ShopifyMeta {
         {
           operation: 'metafield',
           variables: {
-            key: { value: 'discount-meta', type: 'String', required: true },
+            key: { value: 'discount_meta', type: 'String', required: true },
             namespace: {
               value: ShopifyMeta.namespace,
               type: 'String',
@@ -275,10 +283,9 @@ export class ShopifyDiscount extends ShopifyMeta {
     );
     const discountIdResp: ShopifyData<ShopifyDiscountIdRsp> =
       await response.json();
-    console.log(JSON.stringify(discountIdResp));
     if (
-      discountIdResp.data.discountNode.discount &&
-      discountIdResp.data.discountNode.metafield
+      discountIdResp.data.discountNode?.discount &&
+      discountIdResp.data.discountNode?.metafield
     ) {
       const discountMeta: ShopifyDiscountMeta = JSON.parse(
         discountIdResp.data.discountNode.metafield.value,
