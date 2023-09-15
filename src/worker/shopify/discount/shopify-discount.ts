@@ -132,8 +132,13 @@ export class ShopifyDiscount extends ShopifyMeta {
   }
 
   async setDiscountAllowed(customer: number, id: string): Promise<void> {
+    let previous = new Date().getTime();
+    console.log('setDiscountAllowed', new Date().getTime() - previous);
+    previous = new Date().getTime();
     const key = 'discount_allowed';
     const cur = await this.getCustomerMetafield(customer, key);
+    console.log('getCustomerMetafield', new Date().getTime() - previous);
+    previous = new Date().getTime();
     const allowedList: Array<string> = JSON.parse(
       cur.data.customer.metafield?.value ?? '[]',
     );
@@ -147,6 +152,9 @@ export class ShopifyDiscount extends ShopifyMeta {
         ownerId: `gid://shopify/Customer/${customer}`,
       },
     ]);
+
+    console.log('setMetafields', new Date().getTime() - previous);
+    previous = new Date().getTime();
   }
 
   async getDiscountIds(
