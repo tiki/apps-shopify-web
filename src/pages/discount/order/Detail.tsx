@@ -36,7 +36,7 @@ export function DiscountOrderDetail() {
         <Layout.Section>
           <LegacyCard>
             <LegacyCard.Section title="Title">
-              <p>Title: {discount.title}</p>
+              <p>Title AAAAAAAAAA: {discount.title}</p>
               <p>Description: {discount.metafields.description}</p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Value">
