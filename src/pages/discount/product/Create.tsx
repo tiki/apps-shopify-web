@@ -18,9 +18,9 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
-  MaxUsageCheckbox
+  MaxUsageCheckbox,
 } from '../../../components';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
@@ -82,15 +82,13 @@ export function DiscountProductCreate() {
     }
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
-    if (
-      event.shippingDiscounts !== undefined 
-    )
-      setCombines((prevProps)=>({
+    if (event.shippingDiscounts !== undefined)
+      setCombines((prevProps) => ({
         ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
       }));
     if (event.productDiscounts !== undefined)
-      setCombines((prevProps)=>({
+      setCombines((prevProps) => ({
         ...prevProps,
         productDiscounts: event.productDiscounts,
       }));
@@ -118,7 +116,7 @@ export function DiscountProductCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
-    console.log('body:', body)
+    console.log('body:', body);
     await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -171,15 +169,15 @@ export function DiscountProductCreate() {
                     setFields(fields);
                   }}
                 />
-              </LegacyCard.Section>
+                </LegacyCard.Section> */}
               <LegacyCard.Section title="Usage limit">
-              {<MaxUsageCheckbox onChange={handleChange} />}
-            </LegacyCard.Section>
+                {<MaxUsageCheckbox onChange={handleChange} />}
+              </LegacyCard.Section>
               <LegacyCard.Section title="Combinations">
                 <CombinationsCard
-                discountClassProp="PRODUCT"
-                onChange={handleChange}
-              />
+                  discountClassProp="PRODUCT"
+                  onChange={handleChange}
+                />
               </LegacyCard.Section>
             </LegacyCard>
             <MinReqsCard

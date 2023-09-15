@@ -19,6 +19,7 @@ import {
   MaxUsageCheckbox,
   DiscountSummary,
 } from '../../../components';
+import React from 'react';
 
 export function DiscountOrderCreate() {
   const app = useAppBridge();
@@ -58,7 +59,7 @@ export function DiscountOrderCreate() {
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
     if (event.shippingDiscounts !== undefined)
-      setCombines((prevProps)=>({
+      setCombines((prevProps) => ({
         ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
       }));
@@ -86,15 +87,12 @@ export function DiscountOrderCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
-    console.log('body:', body)
-    await authenticatedFetch(
-      'https://tiki-web.pages.dev/api/latest/discount',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      },
-    );
+    console.log('body:', body);
+    await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
     });
@@ -122,9 +120,11 @@ export function DiscountOrderCreate() {
               {<MaxUsageCheckbox onChange={handleChange} />}
             </LegacyCard.Section>
             <LegacyCard.Section title="Combinations">
-              <CombinationsCard discountClassProp="ORDER" onChange={handleChange} />
+              <CombinationsCard
+                discountClassProp="ORDER"
+                onChange={handleChange}
+              />
             </LegacyCard.Section>
-
           </LegacyCard>
           <MinReqsCard
             appliesTo={AppliesTo.Order}
