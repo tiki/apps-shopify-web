@@ -4,24 +4,31 @@
  */
 
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
+import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 
 import { Page, Layout, LegacyCard } from '@shopify/polaris';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 
 export function DiscountProductDetail() {
-  const discount: DiscountReq = {
-    title: 'Test Title',
-    startsAt: new Date('2023-06-20T10:54:12.959Z'),
-    endsAt: new Date('2024-06-20T10:54:12.959Z'),
+  const authenticatedFetch = useAuthenticatedFetch();
+  const url = new URL(window.location.href);
+  console.log('url', url);
+  const params = url.searchParams;
+  const id = params.get('id') ?? '';
+  console.log('id:', id);
+  
+  let [discount, setDiscount] = useState<DiscountReq>({
+    title: '',
+    startsAt: new Date(),
+    endsAt: new Date(),
     metafields: {
+      description: '',
       type: 'order',
-      description: 'test description',
-
-      discountType: 'amount',
-      discountValue: 10,
-      minValue: 100,
+      discountType: '',
+      discountValue: 0,
+      minValue: 0,
       minQty: 0,
-      onePerUser: true,
+      onePerUser: false,
       products: [],
       collections: [],
     },
@@ -30,7 +37,18 @@ export function DiscountProductDetail() {
       productDiscounts: false,
       shippingDiscounts: false,
     },
-  };
+  })
+
+  useEffect(() => {
+    authenticatedFetch(
+      ` https://intg-shpfy.pages.dev/api/latest/discount/${id}`,
+      { method: 'get' })
+    .then(response => response.json())
+    .then(data => setDiscount(data))
+  },[])
+
+  console.log(discount);
+
 
   return (
     <Page title="Product Discount">
