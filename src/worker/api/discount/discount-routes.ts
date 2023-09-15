@@ -10,6 +10,7 @@ import { Shopify } from '../../shopify/shopify';
 import { DiscountRsp } from './discount-rsp';
 
 export async function create(request: IRequest, env: Env): Promise<Response> {
+  console.log('token: ', new Date().getTime());
   const token = request.headers.get(API.Consts.AUTHORIZATION);
   if (token == null) {
     throw new API.ErrorBuilder()
@@ -17,6 +18,7 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
       .error(403);
   }
 
+  console.log('claims: ', new Date().getTime());
   const claims = await Shopify.verifySession(
     token.replace('Bearer ', ''),
     env.KEY_ID,
@@ -26,10 +28,15 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
   guard(body);
   Throw.ifNull(claims.dest);
 
+  console.log('shopDomain: ', new Date().getTime());
   const shopDomain = (claims.dest as string).replace(/^https?:\/\//, '');
+  console.log('shopify: ', new Date().getTime());
   const shopify = new Shopify(shopDomain, env);
+  console.log('accessToken: ', new Date().getTime());
   const accessToken = await shopify.getToken();
+  console.log('install: ', new Date().getTime());
   const install = await shopify.getInstall(accessToken);
+  console.log('rsp: ', new Date().getTime());
   const rsp: DiscountRsp = {
     id: await shopify.createDiscount(
       body,
@@ -50,7 +57,6 @@ export async function get(
       .help('Check your Authorization header')
       .error(403);
   }
-
   const claims = await Shopify.verifySession(
     token.replace('Bearer ', ''),
     env.KEY_ID,
