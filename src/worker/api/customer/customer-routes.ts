@@ -63,7 +63,11 @@ export async function discount(request: IRequest, env: Env): Promise<Response> {
   }
 
   const shopify = new Shopify(json.shop, env);
+  console.log('shopify', new Date().getTime() - previous);
+  previous = new Date().getTime();
   await shopify.setDiscountAllowed(json.customerId, json.discountId);
+  console.log('registry', new Date().getTime() - previous);
+  previous = new Date().getTime();
   return new Response(null, {
     status: 201,
   });
