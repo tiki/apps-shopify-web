@@ -46,6 +46,7 @@ export function DiscountOrderDetail() {
       { method: 'get' })
     .then(response => response.json())
     .then(data => setDiscount(data))
+    .catch(error => console.log(error))
   },[])
 
 
