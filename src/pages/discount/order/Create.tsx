@@ -58,11 +58,10 @@ export function DiscountOrderCreate() {
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
     if (event.shippingDiscounts !== undefined)
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: false,
+      setCombines((prevProps)=>({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
-      });
+      }));
   };
 
   const submit = async () => {
@@ -87,8 +86,9 @@ export function DiscountOrderCreate() {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
+    console.log('body:', body)
     await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
+      'https://tiki-web.pages.dev/api/latest/discount',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -121,6 +121,10 @@ export function DiscountOrderCreate() {
             <LegacyCard.Section title="Usage limit">
               {<MaxUsageCheckbox onChange={handleChange} />}
             </LegacyCard.Section>
+            <LegacyCard.Section title="Combinations">
+              <CombinationsCard discountClassProp="ORDER" onChange={handleChange} />
+            </LegacyCard.Section>
+
           </LegacyCard>
           <MinReqsCard
             appliesTo={AppliesTo.Order}
@@ -129,8 +133,6 @@ export function DiscountOrderCreate() {
             qty={minQty}
             onChange={handleChange}
           />
-
-          <CombinationsCard discountClassProp="ORDER" onChange={handleChange} />
           <ActiveDatesCard
             onChange={(start: string, end: string) => {
               setStartsAt(new Date(start));
@@ -152,6 +154,7 @@ export function DiscountOrderCreate() {
             combinesWith={combinesWith}
             startsAt={startsAt ?? ''}
             endsAt={endsAt}
+            isProductDiscount={false}
           />
         </Layout.Section>
         <Layout.Section>
