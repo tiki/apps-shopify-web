@@ -88,7 +88,7 @@ export function DiscountOrderCreate() {
       },
     };
     console.log('body:', body);
-    await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
+    await authenticatedFetch('https://intg-shpfy.pages.dev/api/latest/discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
