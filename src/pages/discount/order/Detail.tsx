@@ -18,27 +18,7 @@ export function DiscountOrderDetail() {
   const id = pathname;
   console.log('id:', id);
 
-  let [discount, setDiscount] = useState<DiscountReq>({
-    title: '',
-    startsAt: new Date(),
-    endsAt: new Date(),
-    metafields: {
-      description: '',
-      type: 'order',
-      discountType: '',
-      discountValue: 0,
-      minValue: 0,
-      minQty: 0,
-      onePerUser: false,
-      products: [],
-      collections: [],
-    },
-    combinesWith: {
-      orderDiscounts: false,
-      productDiscounts: false,
-      shippingDiscounts: false,
-    },
-  })
+  let [discount, setDiscount] = useState<DiscountReq>()
 
   useEffect(() => {
     authenticatedFetch(
@@ -52,7 +32,7 @@ export function DiscountOrderDetail() {
 
  console.log(discount);
 
-  return (
+  return ( !discount ? <Page></Page> :
     <Page title="Order Discount">
       <Layout >
         <Layout.Section>
@@ -103,10 +83,10 @@ export function DiscountOrderDetail() {
               </p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Active dates">
-              <p>Starts at: {discount.startsAt.toLocaleTimeString() ?? ''}</p>
+              <p>Starts at: {new Date(discount.startsAt).toLocaleTimeString() ?? ''}</p>
               <p>
                 {discount.endsAt
-                  ? `Ends at: ${discount.endsAt.toLocaleDateString() ?? ''}`
+                  ? `Ends at: ${new Date(discount.endsAt).toLocaleDateString() ?? ''}`
                   : ''}
               </p>
             </LegacyCard.Section>
