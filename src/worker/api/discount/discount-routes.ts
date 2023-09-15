@@ -56,7 +56,8 @@ export async function get(
     env.KEY_ID,
     env.KEY_SECRET,
   );
-  const shopify = new Shopify(claims.dest as string, env);
+  const shopDomain = (claims.dest as string).replace(/^https?:\/\//, '');
+  const shopify = new Shopify(shopDomain, env);
   const rsp = await shopify.getDiscountById(ctx.id);
   return json(rsp);
 }

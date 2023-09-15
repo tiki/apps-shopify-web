@@ -283,7 +283,6 @@ export class ShopifyDiscount extends ShopifyMeta {
     );
     const discountIdResp: ShopifyData<ShopifyDiscountIdRsp> =
       await response.json();
-    console.log(JSON.stringify(discountIdResp));
     if (
       discountIdResp.data.discountNode.discount &&
       discountIdResp.data.discountNode.metafield
