@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 import { LegacyCard } from '@shopify/polaris';
-
+import React from 'react';
 import { DiscountReqCombine } from '../worker/api/discount/discount-req-combine';
 
 interface DiscountSummaryProps {
