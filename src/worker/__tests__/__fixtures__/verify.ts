@@ -452,7 +452,7 @@ async function sign(data: string): Promise<ArrayBuffer> {
   );
 }
 
-export async function q(): Promise<string> {
+export async function signedHeader(): Promise<string> {
   const signature = await sign(webhook);
   return btoa(
     String.fromCharCode.apply(
