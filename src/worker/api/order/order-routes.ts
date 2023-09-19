@@ -11,18 +11,15 @@ import { Tiki } from '../../tiki/tiki';
 
 export async function paid(request: IRequest, env: Env): Promise<Response> {
   const shop = request.headers.get('X-Shopify-Shop-Domain');
-  console.log('teste', shop)
   Throw.ifNull(shop, 'X-Shopify-Shop-Domain');
-  //const shopify = new Shopify(shop as string, env);
-  const shopify = new Shopify('tiki-dev-store.myshopify.com', env);
-  // const success = await shopify.verifyWebhook(request);
-  // if (!success) {
-  //   throw new API.ErrorBuilder().message('Invalid signature').error(403);
-  // }
+  const shopify = new Shopify(shop as string, env);
+  const success = await shopify.verifyWebhook(request);
+  if (!success) {
+    throw new API.ErrorBuilder().message('Invalid signature').error(403);
+  }
 
   
   const order: OrderReq = await request.json();
-  console.log(order);
   
   await consumeDiscount(shopify, order, env);
 
@@ -51,28 +48,28 @@ async function consumeDiscount(shopify: Shopify, order: OrderReq, env: Env) {
   const tids: Array<string> = [];
 
   ids.data.discountNodes.nodes.forEach((discount) => {
-    console.log(discount.discount)
-    console.log(discount.metafield)
     if (discount.metafield?.key === 'tid') {
       tids.push(discount.metafield.value!);
     }
   });
 
-  console.log('tids',tids)
 
   const allowedDiscounts = tids.filter(value => allowedList.includes(value));
-  console.log('allowedDiscounts', allowedDiscounts)
 
   await shopify.discountUsed(order.customer.id, allowedDiscounts);
 
   const tiki = new Tiki(env)
+  const shopifyToken = await shopify.getToken()
+  const appInstallation = await shopify.getInstall(shopifyToken);
+  const keys = appInstallation.data?.currentAppInstallation.metafields?.nodes;
+  const publicKey = keys?.find((obj)=> obj.key === "public_key_id")
+  const token = await tiki.admin('storage', publicKey?.value!)
 
-  const token = await tiki.admin('storage')
-
-  await fetch('ingest.mytiki.com/api/latest/shopify-order', {
+  await fetch('https://ingest.mytiki.com/api/latest/shopify-order', {
+    method: "POST",
     headers:{
-      "Authorization": token
+      "Authorization": 'Bearer ' + token
     },
     body: JSON.stringify(order)
-  })
+  }).catch(error => console.log(error))
 }
