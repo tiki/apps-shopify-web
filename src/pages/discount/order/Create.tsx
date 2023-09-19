@@ -21,7 +21,7 @@ import {
   BannerImageDescription,
 } from '../../../components';
 import { mutation } from 'gql-query-builder';
-import { StagedUploadResponse, FIleQueryResponse } from '../../../shopify-mutations-types';
+import { StagedUploadResponse, FIleQueryResponse } from '../../../worker/shopify/shopify-mutations-types';
 import React from 'react';
 
 
@@ -206,7 +206,7 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImage: imageId
+      discountImg: imageId
     };
     await authenticatedFetch(
       'https://intg-shpfy.pages.dev/api/latest/discount',
@@ -276,6 +276,7 @@ export function DiscountOrderCreate() {
             combinesWith={combinesWith}
             startsAt={startsAt ?? ''}
             endsAt={endsAt}
+            isProductDiscount={false}
           />
         </Layout.Section>
         <Layout.Section>

@@ -4,12 +4,9 @@
  */
 
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
-
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components';
 import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris';
-
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
-
 import {
   MinReqsCard,
   ActiveDatesCard,
@@ -24,6 +21,7 @@ import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
+import React from 'react';
 
 export function DiscountProductCreate() {
   const app = useAppBridge();
@@ -49,6 +47,7 @@ export function DiscountProductCreate() {
       productDiscounts: false,
       shippingDiscounts: false,
     },
+    discountImg: ''
   });
   const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState<string>();
@@ -117,6 +116,7 @@ export function DiscountProductCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
+      discountImg: ''
     };
     console.log('body:', body)
     await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
