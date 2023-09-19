@@ -13,17 +13,17 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
   const shop = request.headers.get('X-Shopify-Shop-Domain');
   Throw.ifNull(shop, 'X-Shopify-Shop-Domain');
   const shopify = new Shopify(shop as string, env);
-  const success = await shopify.verifyWebhook(request);
-  if (!success) {
-    throw new API.ErrorBuilder().message('Invalid signature').error(403);
-  }
+   const success = await shopify.verifyWebhook(request);
+   if (!success) {
+     throw new API.ErrorBuilder().message('Invalid signature').error(403);
+   }
 
   
   const order: OrderReq = await request.json();
   
-  await consumeDiscount(shopify, order, env);
+  const response = await consumeDiscount(shopify, order, env);
 
-  return new Response(null, {
+  return new Response(JSON.stringify(response), {
     status: 200,
   });
 }
@@ -63,13 +63,16 @@ async function consumeDiscount(shopify: Shopify, order: OrderReq, env: Env) {
   const appInstallation = await shopify.getInstall(shopifyToken);
   const keys = appInstallation.data?.currentAppInstallation.metafields?.nodes;
   const publicKey = keys?.find((obj)=> obj.key === "public_key_id")
-  const token = await tiki.admin('storage', publicKey?.value!)
-
-  await fetch('https://ingest.mytiki.com/api/latest/shopify-order', {
+  const token = await tiki.admin('storage index', publicKey?.value!)
+  return await fetch('https://ingest.mytiki.com/api/latest/shopify-order', {
     method: "POST",
     headers:{
       "Authorization": 'Bearer ' + token
     },
     body: JSON.stringify(order)
-  }).catch(error => console.log(error))
+  })
+  .then(async res => console.log(await res.text()))
+  .then(json => json)
+  .catch(error => console.log(error))
+
 }

@@ -99,8 +99,8 @@ export class Tiki {
   async admin(scope: string, publicKey?: string): Promise<string> {
     const req: TikiTokenAdminReq = {
       grant_type: 'client_credentials',
-      client_id: scope === 'storage' ? publicKey! : this.clientId,
-      client_secret: scope === 'storage' ? '' : this.clientSecret,
+      client_id: scope.includes('storage') ? publicKey! : this.clientId,
+      client_secret: scope.includes('storage') ? '' : this.clientSecret,
       scope: scope,
     };
     return fetch(`${Tiki.authUrl}/oauth/token`, {
@@ -108,10 +108,11 @@ export class Tiki {
       headers: new API.HeaderBuilder()
         .content(API.Consts.APPLICATION_FORM_URL)
         .build(),
-      body: new URLSearchParams(req),
+      body: new URLSearchParams(req).toString(),
     })
       .then((res) => res.json())
-      .then((json)=> (json as TikiTokenRsp).access_token)      
+      .then((json)=> (json as TikiTokenRsp).access_token)
+      .catch(error => error.json())    
   }   
 
   async license(
