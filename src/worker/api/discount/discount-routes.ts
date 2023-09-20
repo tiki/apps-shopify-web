@@ -92,7 +92,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
       ],
     });
-
+    console.log('mutation', stagedUploadsQuery)
      const stagedUploadsVariables = {
        input: {
          filename: body.name,
@@ -101,7 +101,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
          resource: 'FILE',
        },
      };
-
+    console.log('variables', stagedUploadsVariables)
     const token = request.headers?.get(API.Consts.AUTHORIZATION);
     console.log('token', token)
     const shop_url = 'https://tiki-test-store.myshopify.com';
