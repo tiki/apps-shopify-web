@@ -76,16 +76,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     
     let stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
-      variables: { 
-        "input":[
-        {
-        filename: body.name,
-        httpMethod: 'POST',
-        mimeType: `image/${body.mimeType}`,
-        resource: 'FILE',
-        }
-        ]
-      },
+      //variables: ,
       fields: [
         {
           userErrors: ['message', 'field'],
@@ -104,7 +95,16 @@ export async function stagedUpload(request: IRequest, env: Env) {
     const shop_url = 'https://tiki-test-store.myshopify.com';
 
     //const shop_url = app.hostOrigins
-    
+    stagedUploadsQuery.variables = { 
+      input:[
+      {
+      filename: body.name,
+      httpMethod: 'POST',
+      mimeType: `image/${body.mimeType}`,
+      resource: 'FILE',
+      }
+      ]
+    }
     const mutationBody = JSON.stringify(stagedUploadsQuery);
     console.log(mutationBody);
     const stagedUploadsQueryResult = await fetch(
