@@ -148,7 +148,7 @@ export function DiscountOrderCreate() {
 
  
   const submit = async () => {
-    //const imageId = await handleBannerFile()
+    const imageId = await handleBannerFile()
     
     const body: DiscountReq = {
       title: title ?? '',
