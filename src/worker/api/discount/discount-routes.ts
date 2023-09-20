@@ -88,14 +88,14 @@ export async function stagedUpload(request: IRequest, env: Env, ctx: {bannerFile
       ],
     });
 
-    const stagedUploadsVariables = {
-      input: {
-        filename: ctx.bannerFile!.name,
-        httpMethod: 'POST',
-        mimeType: ctx.bannerFile!.type,
-        resource: 'FILE',
-      },
-    };
+    // const stagedUploadsVariables = {
+    //   input: {
+    //     filename: ctx.bannerFile!.name,
+    //     httpMethod: 'POST',
+    //     mimeType: ctx.bannerFile!.type,
+    //     resource: 'FILE',
+    //   },
+    // };
 
     const token = request.headers?.get(API.Consts.AUTHORIZATION);
     console.log('token', token)
@@ -111,7 +111,7 @@ export async function stagedUpload(request: IRequest, env: Env, ctx: {bannerFile
         },
         body: JSON.stringify({
           query: stagedUploadsQuery,
-          variables: stagedUploadsVariables,
+          variables: {},
         }),
       },
     );
