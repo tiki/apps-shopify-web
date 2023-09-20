@@ -69,13 +69,13 @@ export async function stagedUpload(request: IRequest, env: Env) {
   try {
     console.log('teste 12345');
     const body1 = await request.blob()
-    const body2 = await request.arrayBuffer()
-    const body3 = await request.text()
-    const body4 = await request.json()
+    //const body2 = await request.arrayBuffer()
+    //const body3 = await request.text()
+    //const body4 = await request.json()
     console.log('body1:', body1)
-    console.log('body2:', body2)
-    console.log('body3:', body3)
-    console.log('body4:', body4)
+    //console.log('body2:', body2)
+    //console.log('body3:', body3)
+    //console.log('body4:', body4)
     const stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
