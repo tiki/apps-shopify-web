@@ -65,7 +65,7 @@ export async function get(
   return json(rsp);
 }
 
-export async function stagedUpload(request: IRequest, env: Env, ctx: {bannerFile: File}) {
+export async function stagedUpload(request: IRequest, env: Env, ctx: {filename: string, mimeType: string}) {
   try {
     console.log('teste 12345');
     console.log('request', JSON.stringify(request), JSON.stringify(env), JSON.stringify(ctx))
@@ -88,14 +88,14 @@ export async function stagedUpload(request: IRequest, env: Env, ctx: {bannerFile
       ],
     });
 
-    // const stagedUploadsVariables = {
-    //   input: {
-    //     filename: ctx.bannerFile!.name,
-    //     httpMethod: 'POST',
-    //     mimeType: ctx.bannerFile!.type,
-    //     resource: 'FILE',
-    //   },
-    // };
+     const stagedUploadsVariables = {
+       input: {
+         filename: ctx.filename!,
+         httpMethod: 'POST',
+         mimeType: ctx.mimeType!,
+         resource: 'FILE',
+       },
+     };
 
     const token = request.headers?.get(API.Consts.AUTHORIZATION);
     console.log('token', token)
