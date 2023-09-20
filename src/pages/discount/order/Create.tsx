@@ -87,7 +87,7 @@ export function DiscountOrderCreate() {
   const handleBannerFile = async () => {  
     //console.log('teste function', title, bannerFile)
     console.log('teste 123')
-    const stagedUpload = await fetch(`${API.Consts.API_LATEST}/stagedUpload`, {
+    const stagedUpload = await fetch(`https://tiki-web-pages.dev/api/latest/stagedUpload`, {
       body: bannerFile!
     })
 
