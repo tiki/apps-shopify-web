@@ -76,6 +76,16 @@ export async function stagedUpload(request: IRequest, env: Env) {
     
     let stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
+      variables: { 
+        "input":[
+        {
+        filename: body.name,
+        httpMethod: 'POST',
+        mimeType: `image/${body.mimeType}`,
+        resource: 'FILE',
+        }
+        ]
+      },
       fields: [
         {
           userErrors: ['message', 'field'],
@@ -88,16 +98,6 @@ export async function stagedUpload(request: IRequest, env: Env) {
           ],
         },
       ],
-      variables: { 
-        "input" :[
-        {
-        filename: body.name,
-        httpMethod: 'POST',
-        mimeType: `image/${body.mimeType}`,
-        resource: 'FILE',
-        }
-        ]
-      },
     });
     const token = request.headers?.get(API.Consts.AUTHORIZATION);
     
