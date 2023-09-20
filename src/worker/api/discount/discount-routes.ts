@@ -71,21 +71,11 @@ export async function stagedUpload(request: IRequest, env: Env) {
       name: string,
       mimeType: string
     }
-    console.log('teste 12345');
+
     const body: requestImage = await request.json()
-    console.log('body', JSON.stringify(body))
-    const stagedUploadsQuery = mutation({
+    
+    let stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
-      variables: {
-        input: [
-          {
-          filename: body.name,
-          httpMethod: 'POST',
-          mimeType: `image/${body.mimeType}`,
-          resource: 'FILE',
-          }
-        ],
-      },
       fields: [
         {
           userErrors: ['message', 'field'],
@@ -99,41 +89,48 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
       ],
     });
-    console.log('mutation', stagedUploadsQuery)
-    // const stagedUploadsVariables = {
-    //   input: [
-    //     {
-    //     filename: body.name,
-    //     httpMethod: 'POST',
-    //     mimeType: `image/${body.mimeType}`,
-    //     resource: 'FILE',
-    //     }
-    //   ],
-    // };
-    //console.log('variables', stagedUploadsVariables)
+    stagedUploadsQuery.variables = {
+      input: [
+        {
+        filename: body.name,
+        httpMethod: 'POST',
+        mimeType: `image/${body.mimeType}`,
+        resource: 'FILE',
+        }
+      ],
+    };
+    const stagedUploadsVariables = {
+      input: [
+        {
+        filename: body.name,
+        httpMethod: 'POST',
+        mimeType: `image/${body.mimeType}`,
+        resource: 'FILE',
+        }
+      ],
+    };
     const token = request.headers?.get(API.Consts.AUTHORIZATION);
-    console.log('token', token)
+    
     const shop_url = 'https://tiki-test-store.myshopify.com';
+
     //const shop_url = app.hostOrigin
-    console.log('shop_url:', shop_url);
-    // console.log(JSON.stringify({
-    //   query: stagedUploadsQuery.query,
-    //   variables: stagedUploadsVariables,
-    // }))
+
+    
+
     const stagedUploadsQueryResult = await fetch(
       `${shop_url}/admin/api/2023-07/graphql.json`,
       {
         method: 'POST',
         headers: {
           Authorization: token!,
-        },
-        body: JSON.stringify(stagedUploadsQuery)
-        // body: JSON.stringify({
-        //   query: stagedUploadsQuery.query,
-        //   variables: stagedUploadsVariables,
-        // }),
+        }, 
+        body: JSON.stringify(stagedUploadsQuery),
       },
     );
+    console.log(JSON.stringify({
+      query: stagedUploadsQuery.query,
+      variables: stagedUploadsVariables,
+    }))
     const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
     console.log('target', target)
     return target;
