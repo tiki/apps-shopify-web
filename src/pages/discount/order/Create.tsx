@@ -22,6 +22,7 @@ import {
 } from '../../../components';
 import { mutation } from 'gql-query-builder';
 import { StagedUploadResponse, FIleQueryResponse } from '../../../worker/shopify/shopify-mutations-types';
+import { API } from '@mytiki/worker-utils-ts';
 import React from 'react';
 
 
@@ -84,107 +85,70 @@ export function DiscountOrderCreate() {
   };
 
   const handleBannerFile = async () => {  
-    console.log('teste function', title, bannerFile)
-    const stagedUploadsQuery = mutation({
-      operation: 'stagedUploadsCreate',
-      variables: {
-        input: { type: "[StagedUploadInput!]!", name: "input"
-        }
-      },
-       fields: [
-         {
-           userErrors: ['message', 'field'],
-           stagedTargets: ['url', 
-           'resourceUrl', {
-            parameters: ['name','value']
-          }]
-         },
-       
-       ],
+    //console.log('teste function', title, bannerFile)
+    console.log('teste 123')
+    const stagedUpload = await fetch(`${API.Consts.API_LATEST}/stagedUpload`, {
+      body: bannerFile!
     })
 
-       const stagedUploadsVariables = {
-         input: {
-           filename: bannerFile!.name,
-           httpMethod: "POST",
-           mimeType: bannerFile!.type,
-           resource: "FILE",
-         },
-       };
+    console.log('stagedUpload', stagedUpload)
 
-       const shop_url = "https://tiki-test-store.myshopify.com"
-       //const shop_url = app.hostOrigin
-       //console.log('shop_url:', shop_url)
-       let stagedUploadsQueryResult = await authenticatedFetch(`${shop_url}/admin/api/2023-07/graphql.json`, 
-       {
-         method: 'post',
-         body: JSON.stringify({
-           query: stagedUploadsQuery,
-           variables: stagedUploadsVariables,
-         })
-       })
-    
-       const target: StagedUploadResponse = await stagedUploadsQueryResult.json()
-       console.log('target', target)
-       const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"]; 
-       const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"]; 
-       const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
 
-       const form = new FormData();
-       params.forEach(({ name, value }) => {
-         form.append(name, value);
-       });
-       form.append("file", bannerFile!);
+  //      const form = new FormData();
+  //      params.forEach(({ name, value }) => {
+  //        form.append(name, value);
+  //      });
+  //      form.append("file", bannerFile!);
 
-       await fetch(url, {
-         body: form,
-         headers: {
-           "Content-type": "multipart/form-data",
-           "Content-Length": String(bannerFile!.size),  
-         },
-       })
-       console.log("form to AWS ok")
-  const createFileQuery = mutation({
-    operation: 'fileCreate',
-    variables: {
-     files: {type: "[FileCreateInput!]!", name: "files"}
-    },
-    fields: [
-      {
-        userErrors: ['message', 'field'],
-        files: ['createdAt', 'fileStatus', {
-         operation: 'MediaImage',
-         fields: ['id'],
-         fragment: true,
-       }]
-      },
-    ],
-  })
-      const createFileVariables = {
-        files: {
-          alt: "alt-tag",
-          contentType: "IMAGE",
-          originalSource: resourceUrl, 
-        },
-      };
+  //      await fetch(url, {
+  //        body: form,
+  //        headers: {
+  //          "Content-type": "multipart/form-data",
+  //          "Content-Length": String(bannerFile!.size),  
+  //        },
+  //      })
+  //      console.log("form to AWS ok")
+  // const createFileQuery = mutation({
+  //   operation: 'fileCreate',
+  //   variables: {
+  //    files: {type: "[FileCreateInput!]!", name: "files"}
+  //   },
+  //   fields: [
+  //     {
+  //       userErrors: ['message', 'field'],
+  //       files: ['createdAt', 'fileStatus', {
+  //        operation: 'MediaImage',
+  //        fields: ['id'],
+  //        fragment: true,
+  //      }]
+  //     },
+  //   ],
+  // })
+  //     const createFileVariables = {
+  //       files: {
+  //         alt: "alt-tag",
+  //         contentType: "IMAGE",
+  //         originalSource: resourceUrl, 
+  //       },
+  //     };
 
-      const createFileQueryResult = await authenticatedFetch( `${shop_url}/admin/api/2023-07/graphql.json`, {
-        method: 'post',
-        body: JSON.stringify({
-          query: createFileQuery,
-          variables: createFileVariables,
-        }),
-      })
+  //     const createFileQueryResult = await authenticatedFetch( `${shop_url}/admin/api/2023-07/graphql.json`, {
+  //       method: 'post',
+  //       body: JSON.stringify({
+  //         query: createFileQuery,
+  //         variables: createFileVariables,
+  //       }),
+  //     })
       
-      const result: FIleQueryResponse = await createFileQueryResult.json()
-      const imageId = result.data.fileCreate.files[0]["id"]
-      console.log(imageId)
-      return imageId
+  //     const result: FIleQueryResponse = await createFileQueryResult.json()
+  //     const imageId = result.data.fileCreate.files[0]["id"]
+  //     console.log(imageId)
+  //     return imageId
   }
 
  
   const submit = async () => {
-    const imageId = await handleBannerFile()
+    //const imageId = await handleBannerFile()
     
     const body: DiscountReq = {
       title: title ?? '',
@@ -206,7 +170,7 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImg: imageId
+      discountImg: ''
     };
     await authenticatedFetch(
       'https://intg-shpfy.pages.dev/api/latest/discount',
@@ -242,6 +206,12 @@ export function DiscountOrderCreate() {
             <LegacyCard.Section title="Usage limit">
               {<MaxUsageCheckbox onChange={handleChange} />}
             </LegacyCard.Section>
+            <LegacyCard.Section title="Combinations">
+              <CombinationsCard
+                discountClassProp="ORDER"
+                onChange={handleChange}
+              />
+            </LegacyCard.Section>
           </LegacyCard>
           <MinReqsCard
             appliesTo={AppliesTo.Order}
@@ -250,8 +220,6 @@ export function DiscountOrderCreate() {
             qty={minQty}
             onChange={handleChange}
           />
-
-          <CombinationsCard discountClassProp="ORDER" onChange={handleChange} />
           <ActiveDatesCard
             onChange={(start: string, end: string) => {
               setStartsAt(new Date(start));

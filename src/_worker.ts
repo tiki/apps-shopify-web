@@ -28,6 +28,7 @@ router
   .get(`${API.Consts.API_LATEST}/shop/uninstall`, Shop.uninstall)
   .post(`${API.Consts.API_LATEST}/discount`, Discount.create)
   .get(`${API.Consts.API_LATEST}/discount/:id`, Discount.get)
+  .post(`${API.Consts.API_LATEST}/stagedUpload`, Discount.stagedUpload)
   .all('*', Shop.ui);
 
 export default {
