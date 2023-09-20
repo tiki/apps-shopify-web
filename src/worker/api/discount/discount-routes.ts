@@ -13,7 +13,6 @@ import { StagedUploadResponse } from '../../../worker/shopify/shopify-mutations-
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 
-
 export async function create(request: IRequest, env: Env): Promise<Response> {
   const token = request.headers.get(API.Consts.AUTHORIZATION);
   if (token == null) {
@@ -66,59 +65,65 @@ export async function get(
   return json(rsp);
 }
 
-export async function stagedUpload (bannerFile: File){
-  try{
-  console.log('teste 12345')
-  const authenticatedFetch = useAuthenticatedFetch();
+export async function stagedUpload(bannerFile: File, request: IRequest) {
+  try {
+    console.log('teste 12345');
 
-  const stagedUploadsQuery = mutation({
-    operation: 'stagedUploadsCreate',
-    variables: {
-      input: { type: "[StagedUploadInput!]!", name: "input"
-      }
-    },
-     fields: [
-       {
-         userErrors: ['message', 'field'],
-         stagedTargets: ['url', 
-         'resourceUrl', {
-          parameters: ['name','value']
-        }]
-       },
-     ],
-  })
+    const stagedUploadsQuery = mutation({
+      operation: 'stagedUploadsCreate',
+      variables: {
+        input: { type: '[StagedUploadInput!]!', name: 'input' },
+      },
+      fields: [
+        {
+          userErrors: ['message', 'field'],
+          stagedTargets: [
+            'url',
+            'resourceUrl',
+            {
+              parameters: ['name', 'value'],
+            },
+          ],
+        },
+      ],
+    });
 
-  const stagedUploadsVariables = {
-    input: {
-      filename: bannerFile!.name,
-      httpMethod: "POST",
-      mimeType: bannerFile!.type,
-      resource: "FILE",
-    },
-  };
+    const stagedUploadsVariables = {
+      input: {
+        filename: bannerFile!.name,
+        httpMethod: 'POST',
+        mimeType: bannerFile!.type,
+        resource: 'FILE',
+      },
+    };
+    const token = request.headers.get(API.Consts.AUTHORIZATION);
+    console.log('token', token)
+    const shop_url = 'https://tiki-test-store.myshopify.com';
+    //const shop_url = app.hostOrigin
+    console.log('shop_url:', shop_url);
+    let stagedUploadsQueryResult = await fetch(
+      `${shop_url}/admin/api/2023-07/graphql.json`,
+      {
+        method: 'post',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        body: JSON.stringify({
+          query: stagedUploadsQuery,
+          variables: stagedUploadsVariables,
+        }),
+      },
+    );
 
-     const shop_url = "https://tiki-test-store.myshopify.com"
-     //const shop_url = app.hostOrigin
-     console.log('shop_url:', shop_url)
-     let stagedUploadsQueryResult = await authenticatedFetch(`${shop_url}/admin/api/2023-07/graphql.json`, 
-     {
-       method: 'post',
-       body: JSON.stringify({
-         query: stagedUploadsQuery,
-         variables: stagedUploadsVariables,
-       })
-     })
-  
-     const target: StagedUploadResponse = await stagedUploadsQueryResult.json()
-     return target
+    const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
+    return target;
     //  console.log('target', target)
-    //  const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"]; 
-    //  const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"]; 
+    //  const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"];
+    //  const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"];
     //  const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
-    }
-    catch(error){
-      console.log(error)
-    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function guard(req: DiscountReq): void {

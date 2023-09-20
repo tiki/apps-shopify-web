@@ -89,7 +89,7 @@ export function DiscountOrderCreate() {
     console.log('teste 123')
     const form = new FormData
     form.append("bannerFile", bannerFile!)
-    const stagedUpload = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/stagedUpload`, {
+    const stagedUpload = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
       method: 'POST',
       headers: { 'Content-Type': 'form-data' },
       body: form,
