@@ -93,22 +93,26 @@ export async function stagedUpload(request: IRequest, env: Env) {
       ],
     });
     console.log('mutation', stagedUploadsQuery)
-     const stagedUploadsVariables = {
-       input: [
-          {
-          filename: body.name,
-          httpMethod: 'POST',
-          mimeType: `image/${body.mimeType}`,
-          resource: 'FILE',
-          }
-       ],
-     };
+    const stagedUploadsVariables = {
+      input: [
+        {
+        filename: body.name,
+        httpMethod: 'POST',
+        mimeType: `image/${body.mimeType}`,
+        resource: 'FILE',
+        }
+      ],
+    };
     console.log('variables', stagedUploadsVariables)
     const token = request.headers?.get(API.Consts.AUTHORIZATION);
     console.log('token', token)
     const shop_url = 'https://tiki-test-store.myshopify.com';
     //const shop_url = app.hostOrigin
     console.log('shop_url:', shop_url);
+    console.log(JSON.stringify({
+      query: stagedUploadsQuery.query,
+      variables: stagedUploadsVariables,
+    }))
     const stagedUploadsQueryResult = await fetch(
       `${shop_url}/admin/api/2023-07/graphql.json`,
       {
