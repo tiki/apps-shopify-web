@@ -77,7 +77,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     let stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
-        input: "[StagedUploadInput!]!"
+        input: { type: "[StagedUploadInput!]!", name: "input"}
       },
       fields: [
         {
