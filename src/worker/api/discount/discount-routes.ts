@@ -115,7 +115,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
           Authorization: token!,
         },
         body: JSON.stringify({
-          query: stagedUploadsQuery,
+          query: stagedUploadsQuery.query,
           variables: stagedUploadsVariables,
         }),
       },
