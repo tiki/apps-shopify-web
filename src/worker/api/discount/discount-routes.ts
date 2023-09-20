@@ -71,6 +71,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     console.log('request', JSON.stringify(request), JSON.stringify(env))
 
     const body = await request.json()
+    console.log(body)
     const stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
