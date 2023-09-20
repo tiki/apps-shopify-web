@@ -67,8 +67,12 @@ export async function get(
 
 export async function stagedUpload(request: IRequest, env: Env) {
   try {
+    type requestImage = {
+      name: string,
+      mimeType: string
+    }
     console.log('teste 12345');
-    const body = await request.json()
+    const body: requestImage = await request.json()
     console.log('body', JSON.stringify(body))
     const stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
@@ -91,9 +95,9 @@ export async function stagedUpload(request: IRequest, env: Env) {
 
      const stagedUploadsVariables = {
        input: {
-         filename: 'asdad',
+         filename: body.name,
          httpMethod: 'POST',
-         mimeType: 'asdasd',
+         mimeType: `image/${body.mimeType}`,
          resource: 'FILE',
        },
      };
