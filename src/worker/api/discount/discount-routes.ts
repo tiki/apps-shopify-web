@@ -72,7 +72,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     //const body2 = await request.arrayBuffer()
     //const body3 = await request.text()
     //const body4 = await request.json()
-    console.log('body1:', body1)
+    console.log('body1:', JSON.stringify(body1))
     //console.log('body2:', body2)
     //console.log('body3:', body3)
     //console.log('body4:', body4)
