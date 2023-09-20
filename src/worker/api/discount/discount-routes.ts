@@ -65,10 +65,10 @@ export async function get(
   return json(rsp);
 }
 
-export async function stagedUpload(bannerFile: File, request: IRequest) {
+export async function stagedUpload(request: IRequest) {
   try {
     console.log('teste 12345');
-
+    console.log('request', JSON.stringify(request))
     const stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
@@ -88,15 +88,15 @@ export async function stagedUpload(bannerFile: File, request: IRequest) {
       ],
     });
 
-    const stagedUploadsVariables = {
-      input: {
-        filename: bannerFile!.name,
-        httpMethod: 'POST',
-        mimeType: bannerFile!.type,
-        resource: 'FILE',
-      },
-    };
-    const token = request.headers.get(API.Consts.AUTHORIZATION);
+    // const stagedUploadsVariables = {
+    //   input: {
+    //     filename: bannerFile!.name,
+    //     httpMethod: 'POST',
+    //     mimeType: bannerFile!.type,
+    //     resource: 'FILE',
+    //   },
+    // };
+    const token = request.headers?.get(API.Consts.AUTHORIZATION);
     console.log('token', token)
     const shop_url = 'https://tiki-test-store.myshopify.com';
     //const shop_url = app.hostOrigin
@@ -110,7 +110,7 @@ export async function stagedUpload(bannerFile: File, request: IRequest) {
         },
         body: JSON.stringify({
           query: stagedUploadsQuery,
-          variables: stagedUploadsVariables,
+          variables: {},
         }),
       },
     );
