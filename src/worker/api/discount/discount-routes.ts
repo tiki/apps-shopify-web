@@ -66,7 +66,8 @@ export async function get(
   return json(rsp);
 }
 
-export async function stagedUpload (bannerFile: File): Promise<StagedUploadResponse>{
+export async function stagedUpload (bannerFile: File){
+  try{
   console.log('teste 12345')
   const authenticatedFetch = useAuthenticatedFetch();
 
@@ -114,6 +115,10 @@ export async function stagedUpload (bannerFile: File): Promise<StagedUploadRespo
     //  const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"]; 
     //  const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"]; 
     //  const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
+    }
+    catch(error){
+      console.log(error)
+    }
 }
 
 function guard(req: DiscountReq): void {
