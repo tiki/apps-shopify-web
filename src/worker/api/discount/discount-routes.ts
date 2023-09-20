@@ -84,18 +84,17 @@ export async function stagedUpload (bannerFile: File): Promise<StagedUploadRespo
           parameters: ['name','value']
         }]
        },
-     
      ],
   })
 
-     const stagedUploadsVariables = {
-       input: {
-         filename: bannerFile!.name,
-         httpMethod: "POST",
-         mimeType: bannerFile!.type,
-         resource: "FILE",
-       },
-     };
+  const stagedUploadsVariables = {
+    input: {
+      filename: bannerFile!.name,
+      httpMethod: "POST",
+      mimeType: bannerFile!.type,
+      resource: "FILE",
+    },
+  };
 
      const shop_url = "https://tiki-test-store.myshopify.com"
      //const shop_url = app.hostOrigin
