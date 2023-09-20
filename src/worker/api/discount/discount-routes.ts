@@ -65,10 +65,12 @@ export async function get(
   return json(rsp);
 }
 
-export async function stagedUpload(request: IRequest, env: Env, ctx: {filename: string, mimeType: string}) {
+export async function stagedUpload(request: IRequest, env: Env) {
   try {
     console.log('teste 12345');
-    console.log('request', JSON.stringify(request), JSON.stringify(env), JSON.stringify(ctx))
+    console.log('request', JSON.stringify(request), JSON.stringify(env))
+
+    const body = await request.json()
     const stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
@@ -90,9 +92,9 @@ export async function stagedUpload(request: IRequest, env: Env, ctx: {filename: 
 
      const stagedUploadsVariables = {
        input: {
-         filename: ctx.filename!,
+         filename: 'asdad',
          httpMethod: 'POST',
-         mimeType: ctx.mimeType!,
+         mimeType: 'asdasd',
          resource: 'FILE',
        },
      };
