@@ -101,12 +101,12 @@ export async function stagedUpload(request: IRequest) {
     const shop_url = 'https://tiki-test-store.myshopify.com';
     //const shop_url = app.hostOrigin
     console.log('shop_url:', shop_url);
-    let stagedUploadsQueryResult = await fetch(
+    const stagedUploadsQueryResult = await fetch(
       `${shop_url}/admin/api/2023-07/graphql.json`,
       {
-        method: 'post',
+        method: 'POST',
         headers: {
-          Authorization: 'Bearer ' + token,
+          Authorization: token!,
         },
         body: JSON.stringify({
           query: stagedUploadsQuery,
@@ -114,8 +114,8 @@ export async function stagedUpload(request: IRequest) {
         }),
       },
     );
-
     const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
+    console.log('target', target)
     return target;
     //  console.log('target', target)
     //  const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"];
