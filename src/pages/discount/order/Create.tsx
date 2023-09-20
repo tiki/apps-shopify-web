@@ -88,6 +88,7 @@ export function DiscountOrderCreate() {
     //console.log('teste function', title, bannerFile)
     console.log('teste 123')
     const stagedUpload = await fetch(`https://tiki-web-pages.dev/api/latest/stagedUpload`, {
+      method: 'POST',
       body: bannerFile!
     })
 
