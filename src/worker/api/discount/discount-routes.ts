@@ -118,7 +118,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
         body: JSON.stringify({
           query: stagedUploadsQuery,
-          variables: {},
+          variables: stagedUploadsVariables,
         }),
       },
     );
