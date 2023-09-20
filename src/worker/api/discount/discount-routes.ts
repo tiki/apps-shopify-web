@@ -107,6 +107,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
       }
       ]
     }
+    console.log(stagedUploadsQuery)
     const mutationBody = JSON.stringify(stagedUploadsQuery);
     console.log(mutationBody);
     const stagedUploadsQueryResult = await fetch(
