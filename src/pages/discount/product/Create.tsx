@@ -252,7 +252,7 @@ export function DiscountProductCreate() {
           />
         </Layout.Section>
         <Layout.Section>
-          <InlineError message={(submitError!)} fieldID="errorField" />
+          <InlineError message={(submitError! ?? '')} fieldID="errorField" />
           <PageActions
             primaryAction={{
               content: 'Save discount',
