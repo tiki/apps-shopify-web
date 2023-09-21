@@ -90,13 +90,12 @@ export function DiscountOrderCreate() {
     const extension = bannerFile?.name.lastIndexOf(".")
     const mimeType = bannerFile?.name.slice(extension! + 1)
     console.log(extension, mimeType)
-    //const stagedUpload = 
-    return await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
+    const imageId = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
       method: 'POST',
       headers: { 'Content-Type': 'Application/json' },
       body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType, size: bannerFile?.size}),
     })
-    
+    return await imageId.text()
     //console.log('stagedUpload', await stagedUpload.text())
 
 
@@ -154,7 +153,7 @@ export function DiscountOrderCreate() {
 
  
   const submit = async () => {
-    const imageId = (await handleBannerFile()).json()
+    const imageId = await handleBannerFile()
     console.log(imageId)
     const body: DiscountReq = {
       title: title ?? '',
@@ -176,7 +175,7 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImg: ''
+      discountImg: imageId
     };
     await authenticatedFetch(
       'https://intg-shpfy.pages.dev/api/latest/discount',
