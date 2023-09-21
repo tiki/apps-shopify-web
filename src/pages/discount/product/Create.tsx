@@ -5,7 +5,7 @@
 
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components';
-import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris';
+import { LegacyCard, Layout, Page, PageActions, InlineError } from '@shopify/polaris';
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
 import {
   MinReqsCard,
@@ -22,7 +22,6 @@ import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
-import {InlineError} from '@shopify/polaris';
 import React from 'react';
 
 export function DiscountProductCreate() {
@@ -237,7 +236,6 @@ export function DiscountProductCreate() {
           onChange={handleChange}
           />
           </form>
-          <InlineError message={submitError} fieldID="errorField" />;ß
         </Layout.Section>
         <Layout.Section secondary>
           <DiscountSummary
@@ -261,6 +259,8 @@ export function DiscountProductCreate() {
               onAction: submit,
             }}
           />
+          <InlineError message={submitError} fieldID="errorField" />;ß
+
         </Layout.Section>
       </Layout>
     </Page>
