@@ -93,9 +93,10 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
       ],
     });
-    const token = request.headers?.get(API.Consts.AUTHORIZATION);
-    
+    //const token = request.headers?.get(API.Consts.AUTHORIZATION);
     const shop_url = 'https://tiki-test-store.myshopify.com';
+    const shopify = new Shopify(shop_url, env);
+    const accessToken = await shopify.getToken();
 
     //const shop_url = app.hostOrigins
     stagedUploadsQuery.variables = { 
@@ -123,7 +124,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
         headers: new API.HeaderBuilder()
           .accept(API.Consts.APPLICATION_JSON)
           .content(API.Consts.APPLICATION_JSON)
-          .set(ShopifyAuth.tokenHeader, token!)
+          .set(ShopifyAuth.tokenHeader, accessToken)
           .build(),
         body: JSON.stringify(mutationBody),
       },
