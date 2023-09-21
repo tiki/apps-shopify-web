@@ -130,13 +130,16 @@ export function DiscountOrderCreate() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       },
-    ).then(()=> {
-      redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-        name: Redirect.ResourceType.Discount,
-      });
-      return { status: 'success' };
+    ).then((response)=> {
+      response.json()
     }
-    ).catch(error=>{
+    ).then((data)=>{
+      console.log(data)
+        // redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+        //   name: Redirect.ResourceType.Discount,
+        // });
+        // return { status: 'success' };
+    }).catch(error=>{
       setSubmitError("Ops, Something Went Wrong")
       console.log(error)
     });
