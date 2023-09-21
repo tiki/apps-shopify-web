@@ -155,6 +155,7 @@ export function DiscountProductCreate() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }).then((response)=> {
+      console.log('status', response.status)
       if(response.status >= 200 && response.status < 300){
         redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
          name: Redirect.ResourceType.Discount,
