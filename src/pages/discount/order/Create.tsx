@@ -194,7 +194,7 @@ export function DiscountOrderCreate() {
             title={title ?? ''}
             description={description ?? ''}
             discountType={discountType ?? ''}
-            discountValue={discountValue ?? 10}
+            discountValue={discountValue ?? 0}
             minValue={minValue ?? 0.1}
             minQty={minQty ?? 0.1}
             onePerUser={onePerUser ?? ''}
