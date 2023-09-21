@@ -96,7 +96,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     //const token = request.headers?.get(API.Consts.AUTHORIZATION);
     const shop_url = 'https://tiki-test-store.myshopify.com';
     const shopify = new Shopify(shop_url, env);
-    const accessToken = await shopify.getToken();
+    const accessToken = await shopify.getToken().catch(error=> console.log(error));
     const token = request.headers.get(API.Consts.AUTHORIZATION);
     console.log('bla2')
     //const shop_url = app.hostOrigins
@@ -125,7 +125,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
         headers: new API.HeaderBuilder()
           .accept(API.Consts.APPLICATION_JSON)
           .content(API.Consts.APPLICATION_JSON)
-          .set(ShopifyAuth.tokenHeader, accessToken)
+          .set(ShopifyAuth.tokenHeader, accessToken!)
           .set("Authorization", token!)
           .build(),
         body: JSON.stringify(mutationBody),
