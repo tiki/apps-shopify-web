@@ -101,7 +101,6 @@ export function DiscountProductCreate() {
         setOfferDescription(event.offerDescription)
       }
       if(event.bannerFile){
-        console.log(typeof event.bannerFile, event.bannerFile[0])
         setBannerFile(event.bannerFile[0])
         }
   };
@@ -121,7 +120,7 @@ export function DiscountProductCreate() {
 
   const submit = async () => {
     const imageId = await handleBannerFile()
-
+    console.log(imageId)
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',

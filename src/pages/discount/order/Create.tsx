@@ -79,7 +79,6 @@ export function DiscountOrderCreate() {
         setOfferDescription(event.offerDescription)
       }
       if(event.bannerFile){
-        console.log(typeof event.bannerFile, event.bannerFile[0])
         setBannerFile(event.bannerFile[0])
         }
   };
@@ -87,7 +86,6 @@ export function DiscountOrderCreate() {
   const handleBannerFile = async () => {  
     const extension = bannerFile?.name.lastIndexOf(".")
     const mimeType = bannerFile?.name.slice(extension! + 1)
-    console.log(extension, mimeType)
     const imageId = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
       method: 'POST',
       headers: { 'Content-Type': 'Application/json' },
