@@ -259,8 +259,9 @@ export function DiscountProductCreate() {
               onAction: submit,
             }}
           />
-          <InlineError message={submitError} fieldID="errorField" />;ß
-
+          <InlineError message={(submitError)} fieldID="errorField" />
+          <InlineError message="Teste" fieldID="errorField" />
+          <InlineError message={submitError} fieldID="errorField" />
         </Layout.Section>
       </Layout>
     </Page>
