@@ -122,7 +122,9 @@ export async function stagedUpload(request: IRequest, env: Env) {
         body: JSON.stringify(mutationBody),
       },
     );
-    return new Response(await stagedUploadsQueryResult?.json(), {status: 200})
+    const response = await stagedUploadsQueryResult?.json() ?? 'null'
+    console.log(response)
+    return new Response(JSON.stringify(response) , {status: 200})
     // const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
     // console.log('target', target)
     // return target;
