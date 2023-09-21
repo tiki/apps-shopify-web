@@ -108,8 +108,9 @@ export async function stagedUpload(request: IRequest, env: Env) {
       ]
     }
     console.log(stagedUploadsQuery)
-    const mutationBody = JSON.stringify(stagedUploadsQuery);
+    const mutationBody = stagedUploadsQuery.toString();
     console.log(mutationBody);
+    return new Response(JSON.stringify(mutationBody), {status: 200})
     const stagedUploadsQueryResult = await fetch(
       `${shop_url}/admin/api/2023-07/graphql.json`,
       {
