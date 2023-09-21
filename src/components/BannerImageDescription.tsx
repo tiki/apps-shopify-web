@@ -18,15 +18,6 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
   const fileUpload = !bannerFile && <DropZone.FileUpload />;
   const uploadedFile = bannerFile && (
     <LegacyStack>
-      {/* <Thumbnail
-        size="small"
-        alt={bannerFile.name}
-        source={
-           validImageTypes.includes(bannerFile.type)
-             ? window.URL.createObjectURL(bannerFile!)
-             : NoteMinor
-        }
-      /> */}
       <div>
         {bannerFile.name}{' '}
         <Text variant="bodySm" as="p">
@@ -42,7 +33,6 @@ export const BannerImageDescription = ({ onChange = console.log }) => {
           handleDropZoneDrop
         }
         onDropAccepted={(file)=>{
-          console.log('teste componente', file)
           onChange({bannerFile: file})
         }}
         label="Banner Discount Image"

@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 import { Provider } from '@shopify/app-bridge-react';
 import { AppConfigV2 } from '@shopify/app-bridge';
+import React from 'react';
 
 export function AppBridgeProvider(props: { children: React.ReactNode }) {
   const location = useLocation();
@@ -25,7 +26,7 @@ export function AppBridgeProvider(props: { children: React.ReactNode }) {
     [history, location],
   );
 
-  const apiKey = '1949a2edb1cab0db98cdf67e81742982'; // process.env.SHOPIFY_API_KEY
+  const apiKey = '33d82ccecd1a316a4cbdb7d090735fa8'; // process.env.SHOPIFY_API_KEY
 
   const [appBridgeConfig] = useState(() => {
     const host = new URLSearchParams(location.search).get('host');
