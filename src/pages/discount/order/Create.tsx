@@ -96,9 +96,10 @@ export function DiscountOrderCreate() {
  
   const submit = async () => {
     const imageId = await handleBannerFile().catch(error=>{
-      setSubmitError("Ops, something went wrong during the image upload, try another one.")
       console.log(error)
+      return setSubmitError("Ops, something went wrong during the image upload, try another one.")
     })
+    if(!title || !minValue) return setSubmitError("Title and Discount Value are required")
 
     const body: DiscountReq = {
       title: title ?? '',
@@ -130,19 +131,14 @@ export function DiscountOrderCreate() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       },
-    ).then((response)=> {
-      console.log('status',response.status)
-      if(response.status >= 200 && response.status < 300){
-         redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-          name: Redirect.ResourceType.Discount,
-        });
-        return { status: 'success' };
-      }
-    }
     ).catch(error=>{
       setSubmitError("Ops, Something Went Wrong")
       console.log(error)
     });
+    redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+      name: Redirect.ResourceType.Discount,
+     });
+     return { status: 'success' };
   };
 
   return (
