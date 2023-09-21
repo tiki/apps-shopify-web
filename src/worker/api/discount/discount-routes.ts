@@ -208,7 +208,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     const result: FIleQueryResponse = await createFileQueryResult.json();
     const imageId = result.data.fileCreate.files[0]['id'];
     console.log('imageId', imageId);
-    return imageId;
+    return new Response(imageId, {status: 200});
   } catch (error) {
     console.log(error);
   }
