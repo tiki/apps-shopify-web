@@ -69,10 +69,10 @@ export function DiscountProductCreate() {
   });
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
-  const [submitError, setSubmitError] = useState<string>('')
+  const [submitError, setSubmitError] = useState<string | undefined>('')
 
   const handleChange = (event: any) => {
-    setSubmitError('')
+    setSubmitError(undefined)
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -252,7 +252,7 @@ export function DiscountProductCreate() {
           />
         </Layout.Section>
         <Layout.Section>
-          <InlineError message={(submitError)} fieldID="errorField" />
+          <InlineError message={(submitError!)} fieldID="errorField" />
           <PageActions
             primaryAction={{
               content: 'Save discount',
