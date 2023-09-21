@@ -71,11 +71,13 @@ export async function get(
 
 export async function stagedUpload(request: IRequest, env: Env) {
   try {
+
     type requestImage = {
       name: string;
       mimeType: string;
       size: number;
     };
+
     const body: requestImage = await request.json();
 
     let stagedUploadsQuery = mutation({
@@ -96,12 +98,15 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
       ],
     });
+
     const token = request.headers.get(API.Consts.AUTHORIZATION);
+
     const claims = await Shopify.verifySession(
       token!.replace('Bearer ', ''),
       env.KEY_ID,
       env.KEY_SECRET,
     );
+
     Throw.ifNull(claims.dest);
     const shopDomain = (claims.dest as string).replace(/^https?:\/\//, '');
     const shopify = new Shopify(shopDomain, env);
@@ -150,6 +155,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     form.append('file', body?.name);
     console.log('form', form)
     await fetch(url, {
+      method: "POST",
       body: form,
       headers: {
         'Content-type': 'multipart/form-data',
