@@ -72,7 +72,6 @@ export async function stagedUpload(request: IRequest, env: Env) {
       name: string,
       mimeType: string
     }
-    console.log('bla')
     const body: requestImage = await request.json()
     
     let stagedUploadsQuery = mutation({
@@ -93,23 +92,16 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
       ],
     });
-    //const token = request.headers?.get(API.Consts.AUTHORIZATION);
-    const shop_url = 'https://tiki-test-store.myshopify.com';
     const token = request.headers.get(API.Consts.AUTHORIZATION);
-    console.log('token', token)
     const claims = await Shopify.verifySession(
       token!.replace('Bearer ', ''),
       env.KEY_ID,
       env.KEY_SECRET,
     );
     Throw.ifNull(claims.dest);
-    console.log('claims', claims)
     const shopDomain = (claims.dest as string).replace(/^https?:\/\//, '');
-    console.log('shopDomain', shopDomain)
     const shopify = new Shopify(shopDomain, env);
     const accessToken = await shopify.getToken().catch(error=> console.log(error));
-    console.log('bla2', accessToken)
-    //const shop_url = app.hostOrigins
     stagedUploadsQuery.variables = { 
       input:[
       {
@@ -122,16 +114,10 @@ export async function stagedUpload(request: IRequest, env: Env) {
     }
     console.log(stagedUploadsQuery)
     const mutationBody = stagedUploadsQuery;
-    console.log(mutationBody);
-    //return new Response(JSON.stringify(mutationBody), {status: 200})
-    console.log('bla3')
     const stagedUploadsQueryResult = await fetch(
-      `${shop_url}/admin/api/2023-07/graphql.json`,
+      `${shopDomain}/admin/api/2023-07/graphql.json`,
       {
         method: 'POST',
-        // headers: {
-        //   Authorization: token!,
-        // }, 
         headers: new API.HeaderBuilder()
           .accept(API.Consts.APPLICATION_JSON)
           .content(API.Consts.APPLICATION_JSON)
@@ -141,16 +127,17 @@ export async function stagedUpload(request: IRequest, env: Env) {
         body: JSON.stringify(mutationBody),
       },
     );
-    const response = await stagedUploadsQueryResult?.json()
-    console.log(response)
-    return new Response(JSON.stringify(response) , {status: 200})
-    // const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
-    // console.log('target', target)
-    // return target;
-    //  console.log('target', target)
-    //  const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"];
-    //  const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"];
-    //  const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
+    //const response = await stagedUploadsQueryResult?.json()
+    //console.log(response)
+    //return new Response(JSON.stringify(response) , {status: 200})
+     const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
+     
+     const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"];
+     const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"];
+     const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
+
+     console.log('teste', params, url, resourceUrl)
+     return { params: params, url: url, resourceUrl: resourceUrl };
   } catch (error) {
     console.log(error);
   }
