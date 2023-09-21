@@ -9,6 +9,7 @@ import { Throw, API } from '@mytiki/worker-utils-ts';
 import { Shopify } from '../../shopify/shopify';
 import { DiscountRsp } from './discount-rsp';
 import { mutation } from 'gql-query-builder';
+import { ShopifyAuth } from '../../shopify/auth/shopify-auth';
 import { StagedUploadResponse } from '../../../worker/shopify/shopify-mutations-types';
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
@@ -116,9 +117,14 @@ export async function stagedUpload(request: IRequest, env: Env) {
       `${shop_url}/admin/api/2023-07/graphql.json`,
       {
         method: 'POST',
-        headers: {
-          Authorization: token!,
-        }, 
+        // headers: {
+        //   Authorization: token!,
+        // }, 
+        headers: new API.HeaderBuilder()
+          .accept(API.Consts.APPLICATION_JSON)
+          .content(API.Consts.APPLICATION_JSON)
+          .set(ShopifyAuth.tokenHeader, token!)
+          .build(),
         body: JSON.stringify(mutationBody),
       },
     );
