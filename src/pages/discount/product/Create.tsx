@@ -69,7 +69,7 @@ export function DiscountProductCreate() {
   });
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
-  const [submitError, setSubmitError] = useState<string>('Erro TESTEEEEEEE')
+  const [submitError, setSubmitError] = useState<string>('')
 
   const handleChange = (event: any) => {
     setSubmitError('')
@@ -111,7 +111,6 @@ export function DiscountProductCreate() {
   const handleBannerFile = async () => {  
     const extension = bannerFile?.name.lastIndexOf(".")
     const mimeType = bannerFile?.name.slice(extension! + 1)
-    console.log(extension, mimeType)
     const imageId = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
       method: 'POST',
       headers: { 'Content-Type': 'Application/json' },
@@ -155,14 +154,17 @@ export function DiscountProductCreate() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    }).catch(error=>{
+    }).then(()=> {
+      redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+        name: Redirect.ResourceType.Discount,
+      });
+      return { status: 'success' };
+    }
+    ).catch(error=>{
       setSubmitError("Ops, Something Went Wrong")
       console.log(error)
     });
-    redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-      name: Redirect.ResourceType.Discount,
-    });
-    return { status: 'success' };
+   
   };
 
   return (
@@ -253,15 +255,13 @@ export function DiscountProductCreate() {
           />
         </Layout.Section>
         <Layout.Section>
+          <InlineError message={(submitError)} fieldID="errorField" />
           <PageActions
             primaryAction={{
               content: 'Save discount',
               onAction: submit,
             }}
           />
-          <InlineError message={(submitError)} fieldID="errorField" />
-          <InlineError message="Teste" fieldID="errorField" />
-          <InlineError message={submitError} fieldID="errorField" />
         </Layout.Section>
       </Layout>
     </Page>

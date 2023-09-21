@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components';
-import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris';
+import { LegacyCard, Layout, Page, PageActions, InlineError } from '@shopify/polaris';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
 import {
@@ -20,9 +20,6 @@ import {
   DiscountSummary,
   BannerImageDescription,
 } from '../../../components';
-import { mutation } from 'gql-query-builder';
-import { StagedUploadResponse, FIleQueryResponse } from '../../../worker/shopify/shopify-mutations-types';
-import { API } from '@mytiki/worker-utils-ts';
 import React from 'react';
 
 
@@ -52,8 +49,10 @@ export function DiscountOrderCreate() {
   });
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
+  const [submitError, setSubmitError] = useState<string>('');
 
   const handleChange = (event: any) => {
+    setSubmitError('')
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -96,7 +95,10 @@ export function DiscountOrderCreate() {
 
  
   const submit = async () => {
-    const imageId = await handleBannerFile()
+    const imageId = await handleBannerFile().catch(error=>{
+      setSubmitError("Ops, something went wrong during the image upload, try another one.")
+      console.log(error)
+    })
 
     const body: DiscountReq = {
       title: title ?? '',
@@ -118,8 +120,8 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImg: imageId,
-      discountDescription: offerDescription
+      discountImg: imageId ?? '',
+      discountDescription: offerDescription ?? ''
     };
     await authenticatedFetch(
       'https://tiki-web.pages.dev/api/latest/discount',
@@ -128,11 +130,16 @@ export function DiscountOrderCreate() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       },
-    ).catch(error => console.log(error));
-    redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-      name: Redirect.ResourceType.Discount,
+    ).then(()=> {
+      redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+        name: Redirect.ResourceType.Discount,
+      });
+      return { status: 'success' };
+    }
+    ).catch(error=>{
+      setSubmitError("Ops, Something Went Wrong")
+      console.log(error)
     });
-    return { status: 'success' };
   };
 
   return (
@@ -197,6 +204,7 @@ export function DiscountOrderCreate() {
           />
         </Layout.Section>
         <Layout.Section>
+          <InlineError message={(submitError)} fieldID="errorField" />
           <PageActions
             primaryAction={{
               content: 'Save discount',
