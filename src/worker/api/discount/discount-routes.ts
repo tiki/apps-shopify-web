@@ -110,19 +110,19 @@ export async function stagedUpload(request: IRequest, env: Env) {
     console.log(stagedUploadsQuery)
     const mutationBody = stagedUploadsQuery;
     console.log(mutationBody);
-    return new Response(JSON.stringify(mutationBody), {status: 200})
+    //return new Response(JSON.stringify(mutationBody), {status: 200})
 
-    // const stagedUploadsQueryResult = await fetch(
-    //   `${shop_url}/admin/api/2023-07/graphql.json`,
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       Authorization: token!,
-    //     }, 
-    //     body: mutationBody,
-    //   },
-    // );
-
+    const stagedUploadsQueryResult = await fetch(
+      `${shop_url}/admin/api/2023-07/graphql.json`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: token!,
+        }, 
+        body: JSON.stringify(mutationBody),
+      },
+    );
+    return new Response(await stagedUploadsQueryResult?.json(), {status: 200})
     // const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
     // console.log('target', target)
     // return target;
