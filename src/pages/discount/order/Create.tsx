@@ -96,7 +96,7 @@ export function DiscountOrderCreate() {
       body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType}),
     })
 
-    console.log('stagedUpload', JSON.stringify(stagedUpload))
+    console.log('stagedUpload', stagedUpload)
 
 
   //      const form = new FormData();
