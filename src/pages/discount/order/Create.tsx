@@ -98,10 +98,10 @@ export function DiscountOrderCreate() {
     const imageId = await handleBannerFile().catch(error=>{
       console.log(error)
     })
-    
-    if(imageId === undefined) return setSubmitError("Ops, something went wrong during the image upload, try another one.")
 
-    if(title === undefined || minValue === undefined) return setSubmitError("Title and Discount Value are required")
+    if(title === undefined || discountValue === undefined) return setSubmitError("Title and Discount Value are required")
+
+    if(imageId === undefined) return setSubmitError("Ops, something went wrong during the image upload, try another one.")
 
     const body: DiscountReq = {
       title: title ?? '',
