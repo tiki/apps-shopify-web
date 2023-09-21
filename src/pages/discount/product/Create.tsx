@@ -154,11 +154,13 @@ export function DiscountProductCreate() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    }).then(()=> {
-      redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-        name: Redirect.ResourceType.Discount,
-      });
-      return { status: 'success' };
+    }).then((response)=> {
+      if(response.status >= 200 && response.status < 300){
+        redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+         name: Redirect.ResourceType.Discount,
+        });
+        return { status: 'success' };
+      }
     }
     ).catch(error=>{
       setSubmitError("Ops, Something Went Wrong")

@@ -131,15 +131,14 @@ export function DiscountOrderCreate() {
         body: JSON.stringify(body),
       },
     ).then((response)=> {
-      response.json()
+      if(response.status >= 200 && response.status < 300){
+         redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+          name: Redirect.ResourceType.Discount,
+        });
+        return { status: 'success' };
+      }
     }
-    ).then((data)=>{
-      console.log(data)
-        // redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
-        //   name: Redirect.ResourceType.Discount,
-        // });
-        // return { status: 'success' };
-    }).catch(error=>{
+    ).catch(error=>{
       setSubmitError("Ops, Something Went Wrong")
       console.log(error)
     });
