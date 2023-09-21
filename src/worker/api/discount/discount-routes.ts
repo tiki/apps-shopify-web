@@ -3,14 +3,17 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { IRequest, json } from 'itty-router';
+import { IRequest, json, status } from 'itty-router';
 import { DiscountReq } from './discount-req';
 import { Throw, API } from '@mytiki/worker-utils-ts';
 import { Shopify } from '../../shopify/shopify';
 import { DiscountRsp } from './discount-rsp';
 import { mutation } from 'gql-query-builder';
 import { ShopifyAuth } from '../../shopify/auth/shopify-auth';
-import { StagedUploadResponse } from '../../../worker/shopify/shopify-mutations-types';
+import {
+  FIleQueryResponse,
+  StagedUploadResponse,
+} from '../../../worker/shopify/shopify-mutations-types';
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 
@@ -69,15 +72,16 @@ export async function get(
 export async function stagedUpload(request: IRequest, env: Env) {
   try {
     type requestImage = {
-      name: string,
-      mimeType: string
-    }
-    const body: requestImage = await request.json()
-    
+      name: string;
+      mimeType: string;
+      size: number;
+    };
+    const body: requestImage = await request.json();
+
     let stagedUploadsQuery = mutation({
       operation: 'stagedUploadsCreate',
       variables: {
-        input: { type: "[StagedUploadInput!]!", name: "input"}
+        input: { type: '[StagedUploadInput!]!', name: 'input' },
       },
       fields: [
         {
@@ -101,43 +105,104 @@ export async function stagedUpload(request: IRequest, env: Env) {
     Throw.ifNull(claims.dest);
     const shopDomain = (claims.dest as string).replace(/^https?:\/\//, '');
     const shopify = new Shopify(shopDomain, env);
-    const accessToken = await shopify.getToken().catch(error=> console.log(error));
-    stagedUploadsQuery.variables = { 
-      input:[
-      {
-      filename: body.name,
-      httpMethod: 'POST',
-      mimeType: `image/${body.mimeType}`,
-      resource: 'FILE',
-      }
-      ]
-    }
-    console.log(stagedUploadsQuery)
-    const mutationBody = stagedUploadsQuery;
+    const accessToken = await shopify
+      .getToken()
+      .catch((error) => console.log(error));
+    stagedUploadsQuery.variables = {
+      input: [
+        {
+          filename: body.name,
+          httpMethod: 'POST',
+          mimeType: `image/${body.mimeType}`,
+          resource: 'FILE',
+        },
+      ],
+    };
+    console.log('query staged', stagedUploadsQuery);
     const stagedUploadsQueryResult = await fetch(
-      `${shopDomain}/admin/api/2023-07/graphql.json`,
+      `https://${shopDomain}/admin/api/2023-07/graphql.json`,
       {
         method: 'POST',
         headers: new API.HeaderBuilder()
           .accept(API.Consts.APPLICATION_JSON)
           .content(API.Consts.APPLICATION_JSON)
           .set(ShopifyAuth.tokenHeader, accessToken!)
-          .set("Authorization", token!)
+          .set('Authorization', token!)
           .build(),
-        body: JSON.stringify(mutationBody),
+        body: JSON.stringify(stagedUploadsQuery),
       },
     );
-    //const response = await stagedUploadsQueryResult?.json()
-    //console.log(response)
-    //return new Response(JSON.stringify(response) , {status: 200})
-     const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
-     
-     const params = target.data.stagedUploadsCreate.stagedTargets[0]["parameters"];
-     const url = target.data.stagedUploadsCreate.stagedTargets[0]["url"];
-     const resourceUrl = target.data.stagedUploadsCreate.stagedTargets[0]["resourceUrl"];
+    
+    const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
 
-     console.log('teste', params, url, resourceUrl)
-     return { params: params, url: url, resourceUrl: resourceUrl };
+    const params =
+      target.data.stagedUploadsCreate.stagedTargets[0]['parameters'];
+    const url = target.data.stagedUploadsCreate.stagedTargets[0]['url'];
+    const resourceUrl =
+      target.data.stagedUploadsCreate.stagedTargets[0]['resourceUrl'];
+
+    console.log('teste ------', params, url, resourceUrl);
+
+    const form = new FormData();
+    params.forEach(({ name, value }) => {
+      form.append(name, value);
+    });
+    form.append('file', body?.name);
+    console.log('form', form)
+    await fetch(url, {
+      body: form,
+      headers: {
+        'Content-type': 'multipart/form-data',
+        'Content-Length': String(body!.size),
+      },
+    });
+    console.log('form to AWS ok');
+    let createFileQuery = mutation({
+      operation: 'fileCreate',
+      variables: {
+        files: { type: '[FileCreateInput!]!', name: 'files' },
+      },
+      fields: [
+        {
+          userErrors: ['message', 'field'],
+          files: [
+            'createdAt',
+            'fileStatus',
+            {
+              operation: 'MediaImage',
+              fields: ['id'],
+              fragment: true,
+            },
+          ],
+        },
+      ],
+    });
+    createFileQuery.variables = {
+      files: {
+        alt: 'alt-tag',
+        contentType: 'IMAGE',
+        originalSource: resourceUrl,
+      },
+    };
+    console.log(createFileQuery);
+    const createFileQueryResult = await fetch(
+      `https://${shopDomain}/admin/api/2023-07/graphql.json`,
+      {
+        method: 'POST',
+        body: JSON.stringify(createFileQuery),
+        headers: new API.HeaderBuilder()
+          .accept(API.Consts.APPLICATION_JSON)
+          .content(API.Consts.APPLICATION_JSON)
+          .set(ShopifyAuth.tokenHeader, accessToken!)
+          .set('Authorization', token!)
+          .build(),
+      },
+    );
+
+    const result: FIleQueryResponse = await createFileQueryResult.json();
+    const imageId = result.data.fileCreate.files[0]['id'];
+    console.log('imageId', imageId);
+    return imageId;
   } catch (error) {
     console.log(error);
   }

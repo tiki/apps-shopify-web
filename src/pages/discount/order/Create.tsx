@@ -93,7 +93,7 @@ export function DiscountOrderCreate() {
     const stagedUpload = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
       method: 'POST',
       headers: { 'Content-Type': 'Application/json' },
-      body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType}),
+      body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType, size: bannerFile?.size}),
     })
     
     console.log('stagedUpload', await stagedUpload.text())
