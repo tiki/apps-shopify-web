@@ -38,7 +38,7 @@ export function DiscountOrderCreate() {
   const [discountType, setDiscountType] = useState<'amount' | 'percentage'>(
     'amount',
   );
-  const [discountValue, setDiscountValue] = useState<number>(10);
+  const [discountValue, setDiscountValue] = useState<number>();
   const [minValue, setMinValue] = useState<number>();
   const [minQty, setMinQty] = useState<number>();
   const [onePerUser, setOnePerUser] = useState<boolean>(true);
@@ -194,7 +194,7 @@ export function DiscountOrderCreate() {
             title={title ?? ''}
             description={description ?? ''}
             discountType={discountType ?? ''}
-            discountValue={discountValue ?? ''}
+            discountValue={discountValue ?? 10}
             minValue={minValue ?? 0.1}
             minQty={minQty ?? 0.1}
             onePerUser={onePerUser ?? ''}

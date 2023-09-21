@@ -58,7 +58,7 @@ export function DiscountProductCreate() {
   const [discountType, setDiscountType] = useState<'amount' | 'percentage'>(
     'amount',
   );
-  const [discountValue, setDiscountValue] = useState<number>(10);
+  const [discountValue, setDiscountValue] = useState<number>();
   const [minValue, setMinValue] = useState<number>();
   const [minQty, setMinQty] = useState<number>();
   const [onePerUser, setOnePerUser] = useState<boolean>(true);
@@ -124,7 +124,7 @@ export function DiscountProductCreate() {
     const imageId = await handleBannerFile().catch(error=>{
       console.log(error)
     })
-    
+
     if(title === undefined || discountValue === undefined) return setSubmitError("Title and Discount Value are required")
 
     if(imageId === undefined) return setSubmitError("Ops, something went wrong during the image upload, try another one.")
@@ -243,7 +243,7 @@ export function DiscountProductCreate() {
             title={title ?? ''}
             description={description ?? ''}
             discountType={discountType ?? ''}
-            discountValue={discountValue ?? ''}
+            discountValue={discountValue ?? 10}
             minValue={minValue ?? 0.1}
             minQty={minQty ?? 0.1}
             onePerUser={onePerUser ?? ''}
