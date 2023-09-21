@@ -99,7 +99,7 @@ export function DiscountOrderCreate() {
  
   const submit = async () => {
     const imageId = await handleBannerFile()
-    console.log(imageId)
+
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
@@ -120,7 +120,8 @@ export function DiscountOrderCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImg: imageId
+      discountImg: imageId,
+      discountDescription: offerDescription
     };
     await authenticatedFetch(
       'https://tiki-web.pages.dev/api/latest/discount',

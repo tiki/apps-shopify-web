@@ -15,7 +15,8 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
-  MaxUsageCheckbox
+  MaxUsageCheckbox,
+  BannerImageDescription
 } from '../../../components';
 import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
@@ -47,7 +48,8 @@ export function DiscountProductCreate() {
       productDiscounts: false,
       shippingDiscounts: false,
     },
-    discountImg: ''
+    discountImg: '',
+    discountDescription: ''
   });
   const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState<string>();
@@ -65,6 +67,8 @@ export function DiscountProductCreate() {
     productDiscounts: false,
     shippingDiscounts: false,
   });
+  const [bannerFile, setBannerFile] = useState<File>();
+  const [offerDescription, setOfferDescription] = useState('');
   const handleChange = (event: any) => {
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
@@ -93,9 +97,31 @@ export function DiscountProductCreate() {
         ...prevProps,
         productDiscounts: event.productDiscounts,
       }));
+      if(event.offerDescription){
+        setOfferDescription(event.offerDescription)
+      }
+      if(event.bannerFile){
+        console.log(typeof event.bannerFile, event.bannerFile[0])
+        setBannerFile(event.bannerFile[0])
+        }
   };
 
+  const handleBannerFile = async () => {  
+    const extension = bannerFile?.name.lastIndexOf(".")
+    const mimeType = bannerFile?.name.slice(extension! + 1)
+    console.log(extension, mimeType)
+    const imageId = await authenticatedFetch(`https://tiki-web.pages.dev/api/latest/upload/stage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'Application/json' },
+      body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType, size: bannerFile?.size}),
+    })
+    return await imageId.text()
+  }
+
+
   const submit = async () => {
+    const imageId = await handleBannerFile()
+
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
@@ -116,7 +142,8 @@ export function DiscountProductCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImg: ''
+      discountImg: imageId,
+      discountDescription: offerDescription
     };
     console.log('body:', body)
     await authenticatedFetch('https://tiki-web.pages.dev/api/latest/discount', {
@@ -197,6 +224,9 @@ export function DiscountProductCreate() {
               startsAt={new Date().toUTCString()}
               endsAt={new Date().toUTCString()}
             />
+              <BannerImageDescription 
+          onChange={handleChange}
+          />
           </form>
         </Layout.Section>
         <Layout.Section secondary>

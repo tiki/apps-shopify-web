@@ -123,7 +123,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
         },
       ],
     };
-    console.log('query staged', stagedUploadsQuery);
+
     const stagedUploadsQueryResult = await fetch(
       `https://${shopDomain}/admin/api/2023-07/graphql.json`,
       {
@@ -146,14 +146,11 @@ export async function stagedUpload(request: IRequest, env: Env) {
     const resourceUrl =
       target.data.stagedUploadsCreate.stagedTargets[0]['resourceUrl'];
 
-    console.log('teste ------', params, url, resourceUrl);
-
     const form = new FormData();
     params.forEach(({ name, value }) => {
       form.append(name, value);
     });
     form.append('file', body?.name);
-    console.log('form', form)
     await fetch(url, {
       method: "POST",
       body: form,
@@ -162,7 +159,6 @@ export async function stagedUpload(request: IRequest, env: Env) {
         'Content-Length': String(body!.size),
       },
     });
-    console.log('form to AWS ok');
     let createFileQuery = mutation({
       operation: 'fileCreate',
       variables: {
@@ -190,7 +186,6 @@ export async function stagedUpload(request: IRequest, env: Env) {
         originalSource: resourceUrl,
       },
     };
-    console.log(createFileQuery);
     const createFileQueryResult = await fetch(
       `https://${shopDomain}/admin/api/2023-07/graphql.json`,
       {
@@ -207,7 +202,6 @@ export async function stagedUpload(request: IRequest, env: Env) {
 
     const result: FIleQueryResponse = await createFileQueryResult.json();
     const imageId = result.data.fileCreate.files[0]['id'];
-    console.log('imageId', imageId);
     return new Response(imageId, {status: 200});
   } catch (error) {
     console.log(error);

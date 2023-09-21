@@ -37,7 +37,8 @@ export function DiscountOrderDetail() {
       productDiscounts: false,
       shippingDiscounts: false,
     },
-    discountImg: ''
+    discountImg: '',
+    discountDescription: ''
   })
 
   useEffect(() => {

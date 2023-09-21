@@ -13,4 +13,5 @@ export interface DiscountReq {
   combinesWith: DiscountReqCombine;
   metafields: DiscountReqMeta;
   discountImg: string;
+  discountDescription: string;
 }
