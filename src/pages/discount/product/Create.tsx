@@ -69,7 +69,7 @@ export function DiscountProductCreate() {
   });
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
-  const [submitError, setSubmitError] = useState('Erro TESTEEEEEEE')
+  const [submitError, setSubmitError] = useState<string>('Erro TESTEEEEEEE')
 
   const handleChange = (event: any) => {
     setSubmitError('')
