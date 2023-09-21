@@ -72,7 +72,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
       name: string,
       mimeType: string
     }
-
+    console.log('bla')
     const body: requestImage = await request.json()
     
     let stagedUploadsQuery = mutation({
@@ -97,7 +97,8 @@ export async function stagedUpload(request: IRequest, env: Env) {
     const shop_url = 'https://tiki-test-store.myshopify.com';
     const shopify = new Shopify(shop_url, env);
     const accessToken = await shopify.getToken();
-
+    const token = request.headers.get(API.Consts.AUTHORIZATION);
+    console.log('bla2')
     //const shop_url = app.hostOrigins
     stagedUploadsQuery.variables = { 
       input:[
@@ -113,7 +114,7 @@ export async function stagedUpload(request: IRequest, env: Env) {
     const mutationBody = stagedUploadsQuery;
     console.log(mutationBody);
     //return new Response(JSON.stringify(mutationBody), {status: 200})
-
+    console.log('bla3')
     const stagedUploadsQueryResult = await fetch(
       `${shop_url}/admin/api/2023-07/graphql.json`,
       {
@@ -125,11 +126,12 @@ export async function stagedUpload(request: IRequest, env: Env) {
           .accept(API.Consts.APPLICATION_JSON)
           .content(API.Consts.APPLICATION_JSON)
           .set(ShopifyAuth.tokenHeader, accessToken)
+          .set("Authorization", token!)
           .build(),
         body: JSON.stringify(mutationBody),
       },
     );
-    const response = await stagedUploadsQueryResult?.json() ?? 'null'
+    const response = await stagedUploadsQueryResult?.json()
     console.log(response)
     return new Response(JSON.stringify(response) , {status: 200})
     // const target: StagedUploadResponse = await stagedUploadsQueryResult.json();
