@@ -85,8 +85,6 @@ export function DiscountOrderCreate() {
   };
 
   const handleBannerFile = async () => {  
-    console.log(bannerFile)
-
     const extension = bannerFile?.name.lastIndexOf(".")
     const mimeType = bannerFile?.name.slice(extension! + 1)
     console.log(extension, mimeType)
@@ -96,59 +94,6 @@ export function DiscountOrderCreate() {
       body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType, size: bannerFile?.size}),
     })
     return await imageId.text()
-    //console.log('stagedUpload', await stagedUpload.text())
-
-
-  //      const form = new FormData();
-  //      params.forEach(({ name, value }) => {
-  //        form.append(name, value);
-  //      });
-  //      form.append("file", bannerFile!);
-
-  //      await fetch(url, {
-  //        body: form,
-  //        headers: {
-  //          "Content-type": "multipart/form-data",
-  //          "Content-Length": String(bannerFile!.size),  
-  //        },
-  //      })
-  //      console.log("form to AWS ok")
-  // const createFileQuery = mutation({
-  //   operation: 'fileCreate',
-  //   variables: {
-  //    files: {type: "[FileCreateInput!]!", name: "files"}
-  //   },
-  //   fields: [
-  //     {
-  //       userErrors: ['message', 'field'],
-  //       files: ['createdAt', 'fileStatus', {
-  //        operation: 'MediaImage',
-  //        fields: ['id'],
-  //        fragment: true,
-  //      }]
-  //     },
-  //   ],
-  // })
-  //     const createFileVariables = {
-  //       files: {
-  //         alt: "alt-tag",
-  //         contentType: "IMAGE",
-  //         originalSource: resourceUrl, 
-  //       },
-  //     };
-
-  //     const createFileQueryResult = await authenticatedFetch( `${shop_url}/admin/api/2023-07/graphql.json`, {
-  //       method: 'post',
-  //       body: JSON.stringify({
-  //         query: createFileQuery,
-  //         variables: createFileVariables,
-  //       }),
-  //     })
-      
-  //     const result: FIleQueryResponse = await createFileQueryResult.json()
-  //     const imageId = result.data.fileCreate.files[0]["id"]
-  //     console.log(imageId)
-  //     return imageId
   }
 
  
@@ -178,13 +123,13 @@ export function DiscountOrderCreate() {
       discountImg: imageId
     };
     await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
+      'https://tiki-web.pages.dev/api/latest/discount',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       },
-    );
+    ).catch(error => console.log(error));
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
     });
