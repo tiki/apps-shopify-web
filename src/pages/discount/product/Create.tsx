@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
+import {InlineError} from '@shopify/polaris';
 import React from 'react';
 
 export function DiscountProductCreate() {
@@ -69,7 +70,10 @@ export function DiscountProductCreate() {
   });
   const [bannerFile, setBannerFile] = useState<File>();
   const [offerDescription, setOfferDescription] = useState('');
+  const [submitError, setSubmitError] = useState('Erro TESTEEEEEEE')
+
   const handleChange = (event: any) => {
+    setSubmitError('')
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -119,7 +123,10 @@ export function DiscountProductCreate() {
 
 
   const submit = async () => {
-    const imageId = await handleBannerFile()
+    const imageId = await handleBannerFile().catch(error=>{
+      setSubmitError("Ops, something went wrong during the image upload, try another one.")
+      console.log(error)
+    })
     console.log(imageId)
     const body: DiscountReq = {
       title: title ?? '',
@@ -141,7 +148,7 @@ export function DiscountProductCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
-      discountImg: imageId,
+      discountImg: imageId ?? '',
       discountDescription: offerDescription
     };
     console.log('body:', body)
@@ -149,6 +156,9 @@ export function DiscountProductCreate() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+    }).catch(error=>{
+      setSubmitError("Ops, Something Went Wrong")
+      console.log(error)
     });
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
@@ -227,6 +237,7 @@ export function DiscountProductCreate() {
           onChange={handleChange}
           />
           </form>
+          <InlineError message={submitError} fieldID="errorField" />;ß
         </Layout.Section>
         <Layout.Section secondary>
           <DiscountSummary
