@@ -12,4 +12,6 @@ export interface DiscountReq {
   endsAt?: Date;
   combinesWith: DiscountReqCombine;
   metafields: DiscountReqMeta;
+  discountImg: string;
+  discountDescription: string;
 }

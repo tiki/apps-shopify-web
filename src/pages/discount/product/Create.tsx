@@ -4,12 +4,9 @@
  */
 
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge';
-
 import { AppliesTo, RequirementType } from '@shopify/discount-app-components';
-import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris';
-
+import { LegacyCard, Layout, Page, PageActions, InlineError } from '@shopify/polaris';
 import { DiscountReq } from '../../../worker/api/discount/discount-req';
-
 import {
   MinReqsCard,
   ActiveDatesCard,
@@ -24,6 +21,7 @@ import React, { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
+import React from 'react';
 
 export function DiscountProductCreate() {
   const app = useAppBridge();
@@ -49,6 +47,8 @@ export function DiscountProductCreate() {
       productDiscounts: false,
       shippingDiscounts: false,
     },
+    discountImg: '',
+    discountDescription: ''
   });
   const [title, setTitle] = useState<string>();
   const [description, setDescription] = useState<string>();
@@ -57,7 +57,7 @@ export function DiscountProductCreate() {
   const [discountType, setDiscountType] = useState<'amount' | 'percentage'>(
     'amount',
   );
-  const [discountValue, setDiscountValue] = useState<number>(10);
+  const [discountValue, setDiscountValue] = useState<number>();
   const [minValue, setMinValue] = useState<number>();
   const [minQty, setMinQty] = useState<number>();
   const [onePerUser, setOnePerUser] = useState<boolean>(true);
@@ -66,7 +66,12 @@ export function DiscountProductCreate() {
     productDiscounts: false,
     shippingDiscounts: false,
   });
+  const [bannerFile, setBannerFile] = useState<File>();
+  const [offerDescription, setOfferDescription] = useState('');
+  const [submitError, setSubmitError] = useState<string | undefined>('')
+
   const handleChange = (event: any) => {
+    setSubmitError(undefined)
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
     if (event.type === 'amount' || event.type === 'percent')
@@ -92,9 +97,35 @@ export function DiscountProductCreate() {
         ...prevProps,
         productDiscounts: event.productDiscounts,
       }));
+      if(event.offerDescription){
+        setOfferDescription(event.offerDescription)
+      }
+      if(event.bannerFile){
+        setBannerFile(event.bannerFile[0])
+        }
   };
 
+  const handleBannerFile = async () => {  
+    const extension = bannerFile?.name.lastIndexOf(".")
+    const mimeType = bannerFile?.name.slice(extension! + 1)
+    const imageId = await authenticatedFetch(`https://intg-shpfy.pages.dev/api/latest/shop/image`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'Application/json' },
+      body: JSON.stringify({name: bannerFile?.name!, mimeType: mimeType, size: bannerFile?.size}),
+    })
+    return await imageId.text()
+  }
+
+
   const submit = async () => {
+    const imageId = await handleBannerFile().catch(error=>{
+      console.log(error)
+    })
+
+    if(title === undefined || discountValue === undefined) return setSubmitError("Title and Discount Value are required")
+
+    if(imageId === undefined) return setSubmitError("Ops, something went wrong during the image upload, try another one.")
+
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
@@ -115,8 +146,9 @@ export function DiscountProductCreate() {
         productDiscounts: false,
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
+      discountImg: imageId ?? '',
+      discountDescription: offerDescription
     };
-    console.log('body:', body);
     await authenticatedFetch('https://intg-shpfy.pages.dev/api/latest/discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -124,8 +156,8 @@ export function DiscountProductCreate() {
     }).catch(error => console.log(error));
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
-    });
-    return { status: 'success' };
+     });
+     return { status: 'success' };
   };
 
   return (
@@ -146,7 +178,7 @@ export function DiscountProductCreate() {
               <LegacyCard.Section title="Value">
                 <DiscountAmount onChange={handleChange} />
               </LegacyCard.Section>
-              {/* <LegacyCard.Section title="Applies To">
+               <LegacyCard.Section title="Applies To">
                 <AppliesToChoices
                   onChange={(
                     list: Resource[],
@@ -195,6 +227,9 @@ export function DiscountProductCreate() {
               startsAt={new Date().toUTCString()}
               endsAt={new Date().toUTCString()}
             />
+              <BannerImageDescription 
+          onChange={handleChange}
+          />
           </form>
         </Layout.Section>
         <Layout.Section secondary>
@@ -202,7 +237,7 @@ export function DiscountProductCreate() {
             title={title ?? ''}
             description={description ?? ''}
             discountType={discountType ?? ''}
-            discountValue={discountValue ?? ''}
+            discountValue={discountValue ?? 0}
             minValue={minValue ?? 0.1}
             minQty={minQty ?? 0.1}
             onePerUser={onePerUser ?? ''}
@@ -213,6 +248,7 @@ export function DiscountProductCreate() {
           />
         </Layout.Section>
         <Layout.Section>
+          <InlineError message={(submitError! ?? '')} fieldID="errorField" />
           <PageActions
             primaryAction={{
               content: 'Save discount',

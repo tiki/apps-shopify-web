@@ -18,6 +18,7 @@ export function DiscountOrderDetail() {
   const id = pathname;
   console.log('id:', id);
 
+
   let [discount, setDiscount] = useState<DiscountReq>()
 
   useEffect(() => {

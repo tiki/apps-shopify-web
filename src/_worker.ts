@@ -26,6 +26,7 @@ router
   .post(`${API.Consts.API_LATEST}/customer/discount`, Customer.discount)
   .post(`${API.Consts.API_LATEST}/shop/redact`, Shop.redact)
   .get(`${API.Consts.API_LATEST}/shop/uninstall`, Shop.uninstall)
+  .post(`${API.Consts.API_LATEST}/shop/image`, Shop.image)
   .post(`${API.Consts.API_LATEST}/discount`, Discount.create)
   .get(`${API.Consts.API_LATEST}/discount/:id`, Discount.get)
   .all('*', Shop.ui);

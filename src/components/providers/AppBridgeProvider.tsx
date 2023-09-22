@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 import { Provider } from '@shopify/app-bridge-react';
 import { AppConfigV2 } from '@shopify/app-bridge';
+import React from 'react';
 
 export function AppBridgeProvider(props: { children: React.ReactNode }) {
   const location = useLocation();
