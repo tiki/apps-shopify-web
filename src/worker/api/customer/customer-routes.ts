@@ -52,7 +52,7 @@ export async function discount(request: IRequest, env: Env): Promise<Response> {
   const json: CustomerDiscount = JSON.parse(body);
   console.log('json', new Date().getTime() - previous);
   previous = new Date().getTime();
-  const adminToken = await tiki.admin();
+  const adminToken = await tiki.admin('registry:internal:read index:internal:read storage');
   console.log('adminToken', new Date().getTime() - previous);
   previous = new Date().getTime();
   const registry = await tiki.registry(adminToken, address, appId);

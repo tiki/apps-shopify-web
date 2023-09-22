@@ -13,46 +13,27 @@ export function DiscountOrderDetail() {
   const authenticatedFetch = useAuthenticatedFetch();
   const url = new URL(window.location.href);
   console.log('url', url);
-  const params = url.searchParams;
-  const id = params.get('id') ?? '';
+  const slashPos = url.pathname.lastIndexOf('/');
+  const pathname = url.pathname.slice(slashPos + 1);
+  const id = pathname;
   console.log('id:', id);
 
-  let [discount, setDiscount] = useState<DiscountReq>({
-    title: '',
-    startsAt: new Date(),
-    endsAt: new Date(),
-    metafields: {
-      description: '',
-      type: 'order',
-      discountType: '',
-      discountValue: 0,
-      minValue: 0,
-      minQty: 0,
-      onePerUser: false,
-      products: [],
-      collections: [],
-    },
-    combinesWith: {
-      orderDiscounts: false,
-      productDiscounts: false,
-      shippingDiscounts: false,
-    },
-    discountImg: '',
-    discountDescription: ''
-  })
+
+  let [discount, setDiscount] = useState<DiscountReq>()
 
   useEffect(() => {
     authenticatedFetch(
-      ` https://intg-shpfy.pages.dev/api/latest/discount/${id}`,
+      `https://intg-shpfy.pages.dev/api/latest/discount/${id}`,
       { method: 'get' })
     .then(response => response.json())
     .then(data => setDiscount(data))
+    .catch(error => console.log(error))
   },[])
 
 
  console.log(discount);
 
-  return (
+  return ( !discount ? <Page></Page> :
     <Page title="Order Discount">
       <Layout >
         <Layout.Section>
@@ -103,10 +84,10 @@ export function DiscountOrderDetail() {
               </p>
             </LegacyCard.Section>
             <LegacyCard.Section title="Active dates">
-              <p>Starts at: {discount.startsAt.toLocaleTimeString() ?? ''}</p>
+              <p>Starts at: {new Date(discount.startsAt).toLocaleTimeString() ?? ''}</p>
               <p>
                 {discount.endsAt
-                  ? `Ends at: ${discount.endsAt.toLocaleDateString() ?? ''}`
+                  ? `Ends at: ${new Date(discount.endsAt).toLocaleDateString() ?? ''}`
                   : ''}
               </p>
             </LegacyCard.Section>

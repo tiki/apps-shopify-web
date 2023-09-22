@@ -60,7 +60,7 @@ export class ShopifyAuth {
     }
     if (this._accessToken == null) {
       throw new API.ErrorBuilder()
-        .message('Invalid access token')
+        .message('Invalid shop access offline token.')
         .help('Try /api/latest/oauth/authorize')
         .error(403);
     }

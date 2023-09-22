@@ -16,9 +16,8 @@ import {
   TitleAndDescription,
   DiscountSummary,
   MaxUsageCheckbox,
-  BannerImageDescription
 } from '../../../components';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
@@ -88,15 +87,13 @@ export function DiscountProductCreate() {
     }
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
-    if (
-      event.shippingDiscounts !== undefined 
-    )
-      setCombines((prevProps)=>({
+    if (event.shippingDiscounts !== undefined)
+      setCombines((prevProps) => ({
         ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
       }));
     if (event.productDiscounts !== undefined)
-      setCombines((prevProps)=>({
+      setCombines((prevProps) => ({
         ...prevProps,
         productDiscounts: event.productDiscounts,
       }));
@@ -156,10 +153,7 @@ export function DiscountProductCreate() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
-    }).catch(error=>{
-      setSubmitError("Ops, Something Went Wrong")
-      console.log(error)
-    });
+    }).catch(error => console.log(error));
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
      });
@@ -207,15 +201,15 @@ export function DiscountProductCreate() {
                     setFields(fields);
                   }}
                 />
-              </LegacyCard.Section>
+                </LegacyCard.Section> */}
               <LegacyCard.Section title="Usage limit">
-              {<MaxUsageCheckbox onChange={handleChange} />}
-            </LegacyCard.Section>
+                {<MaxUsageCheckbox onChange={handleChange} />}
+              </LegacyCard.Section>
               <LegacyCard.Section title="Combinations">
                 <CombinationsCard
-                discountClassProp="PRODUCT"
-                onChange={handleChange}
-              />
+                  discountClassProp="PRODUCT"
+                  onChange={handleChange}
+                />
               </LegacyCard.Section>
             </LegacyCard>
             <MinReqsCard

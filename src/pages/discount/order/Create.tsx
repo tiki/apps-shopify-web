@@ -22,10 +22,6 @@ import {
 } from '../../../components';
 import React from 'react';
 
-
-
-
-
 export function DiscountOrderCreate() {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
@@ -69,9 +65,8 @@ export function DiscountOrderCreate() {
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
     if (event.shippingDiscounts !== undefined)
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: false,
+      setCombines((prevProps) => ({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
       });
       if(event.offerDescription){
@@ -126,17 +121,12 @@ export function DiscountOrderCreate() {
       discountImg: imageId ?? '',
       discountDescription: offerDescription ?? ''
     };
-    await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      },
-    ).catch(error=>{
-      setSubmitError("Ops, Something Went Wrong")
-      console.log(error)
-    });
+    console.log('body:', body);
+    await authenticatedFetch('https://intg-shpfy.pages.dev/api/latest/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }).catch(error => console.log(error));
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
      });
