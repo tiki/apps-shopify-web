@@ -18,16 +18,14 @@ import {
   AppliesToChoices,
   TitleAndDescription,
   DiscountSummary,
-  BannerImageDescription
+  MaxUsageCheckbox,
 } from '../../../components';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Redirect } from '@shopify/app-bridge/actions';
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch';
 import { Resource } from '@shopify/app-bridge/actions/ResourcePicker';
-import { useMutation } from 'react-query';
 
-
-export async function DiscountProductCreate() {
+export function DiscountProductCreate() {
   const app = useAppBridge();
   const redirect = Redirect.create(app);
   const authenticatedFetch = useAuthenticatedFetch();
@@ -37,7 +35,6 @@ export async function DiscountProductCreate() {
     endsAt: undefined,
     metafields: {
       description: '',
-
       type: 'product',
       discountType: 'amount',
       discountValue: 10,
@@ -69,8 +66,6 @@ export async function DiscountProductCreate() {
     productDiscounts: false,
     shippingDiscounts: false,
   });
-  const [bannerFile, setBannerFile] = useState<File>();
-  const [offerDescription, setOfferDescription] = useState('');
   const handleChange = (event: any) => {
     if (event.title) setTitle(event.title);
     if (event.description) setDescription(event.description);
@@ -87,112 +82,25 @@ export async function DiscountProductCreate() {
     }
     if (event.oncePerCustomer !== undefined)
       setOnePerUser(event.oncePerCustomer);
-    if (
-      event.shippingDiscounts !== undefined &&
-      event.productDiscounts !== undefined
-    )
-      setCombines({
-        orderDiscounts: false,
-        productDiscounts: event.productDiscounts,
+    if (event.shippingDiscounts !== undefined)
+      setCombines((prevProps) => ({
+        ...prevProps,
         shippingDiscounts: event.shippingDiscounts,
-      });
-      if(event.bannerDescription){
-        setOfferDescription(event.offerDescription)
-      }
-      if(event.bannerFile){
-        setBannerFile(event.bannerFile[0])
-      }
+      }));
+    if (event.productDiscounts !== undefined)
+      setCombines((prevProps) => ({
+        ...prevProps,
+        productDiscounts: event.productDiscounts,
+      }));
   };
-  // ainda necessário transformar isso em query document de fato
-  const stagedUploadsQuery = `mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
-    stagedUploadsCreate(input: $input) {
-      stagedTargets {
-        resourceUrl
-        url
-        parameters {
-          name
-          value
-        }
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`;;
 
-
-  // ainda necessário transformar isso em query document de fato
-  const COLLECTION_UPDATE = `mutation collectionUpdate($input: CollectionInput!) {
-    collectionUpdate(input: $input) {
-      collection {
-        id
-        image {
-          originalSrc
-        }
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`
-
-const [collectionUpdate] = useMutation(COLLECTION_UPDATE);
-const [stagedUploadsCreate] = useMutation(stagedUploadsQuery);
-let { data } = await stagedUploadsCreate({ variables: {
-  "input": [
-    {
-      "resource": "COLLECTION_IMAGE",
-      "filename": bannerFile?.name,
-      "mimeType": bannerFile!.type,
-      "fileSize": bannerFile!.size.toString(),
-      "httpMethod": "POST"
-    }
-  ]
-}})
-const [{ url, parameters }] = data.stagedUploadsCreate.stagedTargets
-
-const formData = new FormData()
-
-parameters.forEach(({name, value}) => {
-formData.append(name, value)
-})
-
-formData.append('file', bannerFile!)
-
-const response = await fetch(url, {
-method: 'POST',
-body: formData
-})
-let imageForm: string
-if (response.ok) {
-const key = parameters.find(p => p.name === 'key')
-imageForm = `${url}/${key.value}`
-await collectionUpdate({ variables: {
-    "input": {
-      "id": props.collectionId,
-      "image": {
-        "src": imageForm
-      }
-    }
-  }
-})
-//é necessário o collection Id.
-
-
-//considerando que o fluxo acima está correto, após corrigir o mutation
-// seria necessario apenas inserir o imageForm dentro do submit abaixo 
-}
   const submit = async () => {
     const body: DiscountReq = {
       title: title ?? '',
       startsAt: startsAt ?? '',
       endsAt,
       metafields: {
-        type: 'order',
+        type: 'product',
         description: description ?? '',
         discountType: discountType ?? '',
         discountValue: discountValue ?? '',
@@ -208,14 +116,12 @@ await collectionUpdate({ variables: {
         shippingDiscounts: combinesWith.shippingDiscounts,
       },
     };
-    await authenticatedFetch(
-      'https://intg-shpfy.pages.dev/api/latest/discount',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      },
-    );
+    console.log('body:', body);
+    await authenticatedFetch('https://intg-shpfy.pages.dev/api/latest/discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }).catch(error => console.log(error));
     redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
       name: Redirect.ResourceType.Discount,
     });
@@ -240,7 +146,7 @@ await collectionUpdate({ variables: {
               <LegacyCard.Section title="Value">
                 <DiscountAmount onChange={handleChange} />
               </LegacyCard.Section>
-              <LegacyCard.Section title="Applies To">
+              {/* <LegacyCard.Section title="Applies To">
                 <AppliesToChoices
                   onChange={(
                     list: Resource[],
@@ -263,6 +169,15 @@ await collectionUpdate({ variables: {
                     setFields(fields);
                   }}
                 />
+                </LegacyCard.Section> */}
+              <LegacyCard.Section title="Usage limit">
+                {<MaxUsageCheckbox onChange={handleChange} />}
+              </LegacyCard.Section>
+              <LegacyCard.Section title="Combinations">
+                <CombinationsCard
+                  discountClassProp="PRODUCT"
+                  onChange={handleChange}
+                />
               </LegacyCard.Section>
             </LegacyCard>
             <MinReqsCard
@@ -272,10 +187,6 @@ await collectionUpdate({ variables: {
               qty={minQty}
               onChange={handleChange}
             />
-            <CombinationsCard
-              discountClassProp="PRODUCT"
-              onChange={handleChange}
-            />
             <ActiveDatesCard
               onChange={(start: string, end: string) => {
                 setStartsAt(new Date(start));
@@ -283,9 +194,6 @@ await collectionUpdate({ variables: {
               }}
               startsAt={new Date().toUTCString()}
               endsAt={new Date().toUTCString()}
-            />
-            <BannerImageDescription 
-                onChange={handleChange}
             />
           </form>
         </Layout.Section>
@@ -301,6 +209,7 @@ await collectionUpdate({ variables: {
             combinesWith={combinesWith ?? ''}
             startsAt={startsAt}
             endsAt={endsAt}
+            isProductDiscount={true}
           />
         </Layout.Section>
         <Layout.Section>
